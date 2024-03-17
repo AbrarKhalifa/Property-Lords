@@ -11,5 +11,7 @@
 	<classpathentry exported="true" kind="lib" path="D:/MASTEK PROJECT/important jar files/jstl-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/MASTEK PROJECT/important jar files/ojdbc11.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/MASTEK PROJECT/important jar files/servlet-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/MASTEK PROJECT/important jar files/bcrypt-0.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/MASTEK PROJECT/important jar files/bytes-0.4.6.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

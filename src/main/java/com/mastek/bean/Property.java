@@ -104,7 +104,7 @@ public class Property {
 		}
 
 		public String getProSize() {
-			return proSize;
+			return proSize+"sqrft";
 		}
 
 		public void setProSize(String proSize) {
