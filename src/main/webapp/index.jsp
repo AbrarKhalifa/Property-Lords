@@ -96,6 +96,11 @@
         </div>
         <!-- Search End -->
 
+ 		<div class="container-xxl py-5">
+ 		<h1>Display all user</h1>
+ 		
+ 			<jsp:include page="displayAllUser.jsp"/>
+ 		</div>
 
         <!-- Category Start -->
         <div class="container-xxl py-5">

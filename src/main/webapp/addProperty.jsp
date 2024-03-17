@@ -63,16 +63,18 @@
 
 
  			<jsp:include page="navbar.jsp" />
- <section class="vh-100 mt-5">
+
+
+<section class="vh-100 mt-5">
     <div class="container-fluid h-custom">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-10">
                     <div class="form-container">
-                        <div class="row">
-                            <!-- First Column - Property Details -->
-                            <div class="col-md-6">
-                                <form id="propertyDetailsForm">
+                        <form id="propertyDetailsForm" action="PropertyServlet" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <!-- First Column - Property Details -->
+                                <div class="col-md-6">
                                     <div class="divider d-flex align-items-center my-4">
                                         Property Details
                                     </div>
@@ -84,13 +86,13 @@
                                             <option value="House">House</option>
                                             <option value="Flat">Flat</option>
                                             <option value="Studio">Studio</option>
-                                            <option value="Apartment">Apartment</option>
+                                            <option value="Appartment">Apartment</option>
                                         </select>
                                         <div id="propertyTypeFeedback" class="invalid-feedback"></div>
                                     </div>
                                     <!-- Property Size input -->
                                     <div class="form-group">
-                                        <label for="propertySize">Property Size</label>
+                                        <label for="propertySize">Property Size in Sqrft</label>
                                         <input type="text" id="propertySize" name="propertySize" class="form-control" placeholder="Enter property size" required />
                                         <div id="propertySizeFeedback" class="invalid-feedback"></div>
                                     </div>
@@ -130,16 +132,15 @@
                                         <label for="propertyDocImages">Upload Property Document Images</label>
                                         <input type="file" id="propertyDocImages" name="propertyDocImages" class="form-control" />
                                     </div>
-                                </form>
-                            </div>
-
-                            <!-- Second Column - Property Address Details -->
-                            <div class="col-md-6">
-                                <form id="addressDetailsForm">
+                                   
+                                    <!-- Your other form inputs for property details go here -->
+                                </div>
+                                <!-- Second Column - Property Address Details -->
+                                <div class="col-md-6">
                                     <div class="divider d-flex align-items-center my-4">
                                         Property Address Details
                                     </div>
-                                    <!-- Landmark input -->
+                                    
                                     <div class="form-group">
                                         <label for="landmark">Landmark</label>
                                         <input type="text" id="landmark" name="landmark" class="form-control" placeholder="Enter landmark" required />
@@ -190,20 +191,23 @@
                                         </select>
                                         <div id="purposeFeedback" class="invalid-feedback">Please select a purpose.</div>
                                     </div>
-                                    <!-- Register Property Button -->
-                                    <div class="form-group">
-                                        <button class="btn btn-primary btn-lg btn-block register-button">Register Property</button>
-                                    </div>
-                                    <!-- Property Document Images upload input -->
-                                </form>
+                                    
+                                    <!-- Your form inputs for property address details go here -->
+                                </div>
                             </div>
-                        </div>
-                        </div>
+                            <!-- Register Property Button -->
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-lg btn-block register-button">Register Property</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
-    </section>
+    </div>
+</section>
+
+
     <!-- Bootstrap Bundle with Popper (JavaScript) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
