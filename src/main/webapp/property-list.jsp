@@ -167,7 +167,7 @@
 		            </div>
 		            <div class="p-4 pb-0">
 		                <h5 class="text-primary mb-3">${property.price}$</h5>
-		                <a class="d-block h5 mb-2" href="">New ${property.propertyType} For ${property.purpose}</a>
+		                <a class="d-block h5 mb-2" href="property-desc.jsp">New ${property.propertyType} For ${property.purpose}</a>
 		                <p><i class="fa fa-map-marker-alt text-primary me-2"></i>${property.address}</p>
 		            </div>
 		            <div class="d-flex border-top">

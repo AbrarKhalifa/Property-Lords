@@ -63,7 +63,7 @@ public class PropertyServlet extends HttpServlet {
 //		System.out.println(request.getParameter("price"));
 //		User user = new User(1,"Abrar","Khalifa","9876958221","abrar@gmail.com","Abrar@1234","agent");
 		Property property = new Property();
-		Property new_property = new Property();
+		int new_property=0;
 		PropertyDao propertydao = new PropertyDao();
 		property.setAgent_id_fk(user);
         property.setPropertyType(request.getParameter("propertyType"));
@@ -78,11 +78,12 @@ public class PropertyServlet extends HttpServlet {
         property.setPurpose(request.getParameter("purpose"));
   
 		new_property= propertydao.insertProperty(property);
+		property.setPropertyId(new_property);
 			
-        System.out.println("new propety: "+new_property.getPropertyId());
+        System.out.println("new propety: "+property.getPropertyId());
         
         PropertyAddress address = new PropertyAddress();
-        address.setProperty_id_fk(new_property);
+        address.setProperty_id_fk(property);
         address.setCity(request.getParameter("city"));
         address.setLandmark(request.getParameter("landmark"));
         address.setSociety(request.getParameter("society"));
@@ -114,7 +115,7 @@ public class PropertyServlet extends HttpServlet {
         }
         //System.out.println(img);
         PropertyImage propertyImage = new PropertyImage();
-        propertyImage.setProperty_id_fk(new_property);
+        propertyImage.setProperty_id_fk(property);
         propertyImage.setImages(img);
         System.out.println(propertyImage.toString());
         PropertyImgDAO propertyimgdao = new PropertyImgDAO();
@@ -124,7 +125,7 @@ public class PropertyServlet extends HttpServlet {
         String fileName1 = saveImageToFileSystem(imagePart1,"Docs");
         
         PropertyDocument propertydoc = new PropertyDocument();
-        propertydoc.setProperty_id_fk(new_property);
+        propertydoc.setProperty_id_fk(property);
         propertydoc.setDocumentImage(fileName1);
         
         PropertyDocDAO propertydocdao = new PropertyDocDAO();
