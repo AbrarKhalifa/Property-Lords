@@ -9,10 +9,12 @@ public class PropertyAddress {
     private String city;
     private String state;
     private String pincode; // Added "pincode" field
+    
+    
 
     // Getters and setters (omitted for brevity)
 
-    public PropertyAddress() {};
+	public PropertyAddress() {};
     
     public PropertyAddress(Property property,String landmark,String society, String city, String state, String pincode) {
         this.property_id_fk = property.getPropertyId();
@@ -91,6 +93,7 @@ public class PropertyAddress {
 	public void setPincode(String pincode) {
 		this.pincode = pincode;
 	}
+	
 
 	@Override
     public String toString() {

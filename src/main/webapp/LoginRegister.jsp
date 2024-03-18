@@ -79,7 +79,27 @@
 			    </div>
 			    <%
 			    }
+			    if(emailAlready != null && emailAlready.equals("User not found"))
+			    {
 			    %>
+			     <div class="alert alert-danger" role="alert">
+			        User not found ...
+			    </div>
+			    <%
+			    }
+			    if(emailAlready != null && emailAlready.equals("Database error"))
+			    {
+			    %>
+			     <div class="alert alert-danger" role="alert">
+			        Database error ...
+			    </div>
+			    <%
+			    }
+			    %>
+			    
+			    
+			    
+			    
     <div id="loginForm">
 
     <section class="mt-5">
