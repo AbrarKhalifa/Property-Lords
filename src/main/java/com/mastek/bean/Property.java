@@ -19,10 +19,18 @@ public class Property {
 //	    private List<PropertyImage> images; // multiple property images
 //	    private PropertyAddress addresses; // List of property addresses
 //	    private PropertyDocument documents; // List of property documents
+	    
+	    
+	    private String Address;  // for display whole data to screen
+	    private String imageData;  // additional 
+	    
+
 
 	    // Getters and setters (omitted for brevity)
-	    
-	    public Property() {
+	  
+
+
+		public Property() {
 	    };
 	    
 	   
@@ -104,7 +112,7 @@ public class Property {
 		}
 
 		public String getProSize() {
-			return proSize+"sqrft";
+			return proSize;
 		}
 
 		public void setProSize(String proSize) {
@@ -174,6 +182,28 @@ public class Property {
 		public void setPurpose(String purpose) {
 			this.purpose = purpose;
 		}
+		
+		
+
+
+	    public String getAddress() {
+			return Address;
+		}
+
+		public void setAddress(String address) {
+			Address = address;
+		}
+
+		  
+	    public String getImageData() {
+			return imageData;
+		}
+
+
+		public void setImageData(String imageData) {
+			this.imageData = imageData;
+		}
+		
 //
 //		public List<PropertyImage> getImages() {
 //			return images;

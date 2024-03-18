@@ -47,135 +47,65 @@ public class LoginRegisterServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
-//		    String email = request.getParameter("email");
-//	        String enteredPassword = request.getParameter("password");
-//
-//	        Connection connection = null;
-//	        PreparedStatement preparedStatement = null;
-//	        ResultSet resultSet = null;
-//
-//	        try {
-//	            Class.forName("oracle.jdbc.OracleDriver");
-//	            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-//	            String query = "SELECT password FROM users11 WHERE email = ?";
-//	            preparedStatement = connection.prepareStatement(query);
-//	            preparedStatement.setString(1, email);
-//	            resultSet = preparedStatement.executeQuery();
-//
-//	            if (resultSet.next()) {
-//	                String hashedPasswordFromDB = resultSet.getString("password");
-
-//        boolean passwordMatches = BCrypt.verifyer().verify(enteredPassword.toCharArray(), hashedPasswordFromDB).verified;
-//        if (passwordMatches) {
-//            // Passwords match, authentication successful
-//            response.sendRedirect("welcome");
-//        } else {
-//            // Passwords don't match, authentication failed
-//            response.sendRedirect("error=Invalid credentials");
-//        }
-//    } else {
-//        // User not found
-//        response.sendRedirect("error=User not found");
-//    }
-//} catch (SQLException e) {
-//    e.printStackTrace();
-//    response.sendRedirect("error=Database error");
-//} catch (ClassNotFoundException e) {
-//    e.printStackTrace();
-//    response.sendRedirect("error=Database error");
-//} finally {
-//    // Close resources
-//    try {
-//        if (resultSet != null) {
-//			resultSet.close();
-//		}
-//        if (preparedStatement != null) {
-//			preparedStatement.close();
-//		}
-//        if (connection != null) {
-//			connection.close();
-//		}
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//    }
-//       }
-//    }
-//}
-
 		 String action = request.getParameter("action");
 
 	        if (action.equals("login")) {
 	        	
-						String email= request.getParameter("email");
-			            String password = request.getParameter("password");
-			            Connection connection = null;
-			            PreparedStatement preparedStatement = null;
-			            ResultSet resultSet = null;
+	        	String email = request.getParameter("email");
+	        	String password = request.getParameter("password");
+	        	Connection connection = null;
+	        	PreparedStatement preparedStatement = null;
+	        	ResultSet rs = null;
 
-			           
-			    		//String LOGIN_CHECK = "SELECT * FROM tbl_users where email = ? and password = ?";
-			            String query = "SELECT password FROM tbl_users WHERE email = ?";
+	        	String query = "SELECT * FROM tbl_users WHERE email = ?";
 
-			           
-			    		//System.out.println(LOGIN_CHECK);
-			    	
-			    		try {
-			    			
-							Class.forName(jdbcDriver);
-						
-							connection = DriverManager.getConnection(jdbcURL,jdbcUsername,jdbcPassword);
-							//preparedStatement = connection.prepareStatement(LOGIN_CHECK);
-			    			
-			    			//preparedStatement.setString(1, email);
-			    			//preparedStatement.setString(2, password);
-			    			
-			    			
-			    			 preparedStatement = connection.prepareStatement(query);
-					         preparedStatement.setString(1, email);
-					         resultSet = preparedStatement.executeQuery();
-					         
-					            if (resultSet.next()) {
-					                String hashedPasswordFromDB = resultSet.getString("password");
-					                boolean passwordMatches = BCrypt.verifyer().verify(password.toCharArray(), hashedPasswordFromDB).verified;
-					                
-					                if (passwordMatches) {
-					                    // Passwords match, authentication successful
-					                    response.sendRedirect("welcome");
-					                } else {
-					                    // Passwords don't match, authentication failed
-					                    response.sendRedirect("error=Invalid credentials");
-										response.sendRedirect("LoginRegister.jsp?error=1");
+	        	try {
+	        	    Class.forName(jdbcDriver);
+	        	    connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+	        	    preparedStatement = connection.prepareStatement(query);
+	        	    preparedStatement.setString(1, email);
+	        	    rs = preparedStatement.executeQuery();
 
-					                }
-					            } else {
-					                // User not found
-					                response.sendRedirect("error=User not found");
-					            }
-					        } catch (SQLException e) {
-					            e.printStackTrace();
-					            response.sendRedirect("error=Database error");
-					        } catch (ClassNotFoundException e) {
-					            e.printStackTrace();
-					            response.sendRedirect("error=Database error");
-					        } finally {
-					            // Close resources
-					            try {
-					                if (resultSet != null) {
-										resultSet.close();
-									}
-					                if (preparedStatement != null) {
-										preparedStatement.close();
-									}
-					                if (connection != null) {
-										connection.close();
-									}
-					            } catch (SQLException e) {
-					                e.printStackTrace();
-					            }
-					        
-					        }
-        			    			
+	        	    if (rs.next()) {
+	        	        String hashedPasswordFromDB = rs.getString("password");
+	        	        boolean passwordMatches = BCrypt.verifyer().verify(password.toCharArray(), hashedPasswordFromDB).verified;
+
+	        	        if (passwordMatches) {
+	        	            // Passwords match, authentication successful
+	        	            User user = new User();
+	        	            user.setUserId(rs.getInt("u_id"));
+	        	            user.setFirstName(rs.getString("first_name"));
+	        	            user.setLastName(rs.getString("last_name"));
+	        	            user.setMobileNumber(rs.getString("mobilenumber"));
+	        	            user.setEmail(rs.getString("email"));
+	        	            user.setRole(rs.getString("u_roles"));
+
+	        	            HttpSession session = request.getSession();
+	        	            session.setAttribute("userObj", user);
+	        	            response.sendRedirect("index.jsp");
+	        	        } else {
+	        	            // Passwords don't match, authentication failed
+	        	            response.sendRedirect("LoginRegister.jsp?error=1");
+	        	        }
+	        	    } else {
+	        	        // User not found
+	        	        response.sendRedirect("LoginRegister.jsp?error=User not found");
+	        	    }
+	        	} catch (Exception e) {
+	        	    e.printStackTrace();
+	        	    response.sendRedirect("LoginRegister.jsp?error=Database error");
+	        	} finally {
+	        	    // Close resources in finally block
+	        	    try {
+	        	        if (rs != null) rs.close();
+	        	        if (preparedStatement != null) preparedStatement.close();
+	        	        if (connection != null) connection.close();
+	        	    } catch (SQLException ex) {
+	        	        ex.printStackTrace();
+	        	    }
+	        	}
+
+				              
 		    			//ResultSet rs = preparedStatement.executeQuery();
 			    			
 
@@ -208,15 +138,6 @@ public class LoginRegisterServlet extends HttpServlet {
 //			    			
 			    		
 			            
-			    			
-							
-							
-							
-			    		} catch (ClassNotFoundException | SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	            
 	        } else if (action.equals("register")) {
 	        	
 	        	
