@@ -57,10 +57,10 @@ import com.mastek.bean.Property;
 	
 		// insert user
 		
-		 public Property insertProperty(Property property) {
+		 public int insertProperty(Property property) {
 		        String query = "INSERT INTO tbl_properties (U_ID_FK, PROPERTY_TYPE, PRO_SIZE, PRICE, FEATURES, NO_OF_ROOMS, NO_OF_KITCHEN, NO_OF_BATHROOMS, AMENITIES, STATUS, PURPOSE) VALUES (:1 , :2 , :3 , :4 , :5 , :6 , :7 , :8 , :9 , :10 , :11 )";
 		        String querysel="select PROPERTY_ID from TBL_PROPERTIES where PROPERTY_ID=(select max(PROPERTY_ID) from tbl_properties)";
-		        Property property_new = new Property();
+		        int property_new = 0;
 		        try (Connection connection = ConnectionManager.getConnection();
 		             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -91,7 +91,7 @@ import com.mastek.bean.Property;
 		                while (resultSet.next()) {
 		                    // Set properties based on your database columns
 		                	
-		                	property_new.setPropertyId(resultSet.getInt("PROPERTY_ID"));
+		                	property_new=resultSet.getInt("PROPERTY_ID");
 		                    System.out.println(resultSet.getInt("PROPERTY_ID"));
 		                 }
 		            System.out.println("Success");
