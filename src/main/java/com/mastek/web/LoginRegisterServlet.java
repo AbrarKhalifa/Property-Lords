@@ -2,7 +2,6 @@ package com.mastek.web;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mastek.bean.User;
+import com.mastek.dao.ConnectionManager;
 import com.mastek.dao.UserDao;
+
+
 
 /**
  * Servlet implementation class LoginRegisterServlet
@@ -26,11 +28,6 @@ public class LoginRegisterServlet extends HttpServlet {
 
 	private UserDao userDao;
 
-	 
-    private String jdbcURL ="jdbc:oracle:thin:@localhost:1521:xe";
-	private String jdbcUsername ="finalProject";
-	private String jdbcPassword ="sys";
-	private String jdbcDriver ="oracle.jdbc.driver.OracleDriver";
 	
     public LoginRegisterServlet() throws ServletException{
 		userDao = new UserDao();
@@ -45,71 +42,89 @@ public class LoginRegisterServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
 		 String action = request.getParameter("action");
 
 	        if (action.equals("login")) {
 	        	
-						String email= request.getParameter("email");
-			            String password = request.getParameter("password");
-			           
-			    		String LOGIN_CHECK = "SELECT * FROM tbl_users where email = ? and password = ?";
+	        	String email = request.getParameter("email");
+	        	
+	        	String password = request.getParameter("password");
+	        	
+	        	
 
-			    		System.out.println(LOGIN_CHECK);
-			    	
-			    		try {
-			    			
-							Class.forName(jdbcDriver);
-						
-							Connection connection = DriverManager.getConnection(jdbcURL,jdbcUsername,jdbcPassword);
-							PreparedStatement preparedStatement = connection.prepareStatement(LOGIN_CHECK);
-			    			
-			    			preparedStatement.setString(1, email);
-			    			preparedStatement.setString(2, password);
-			    			
-			    			
-			    			
-			    			ResultSet rs = preparedStatement.executeQuery();
+	        	String query = "SELECT * FROM tbl_users WHERE email = ? and password =?";
+
+	        	try {
+	        	    
+	        	    Connection connection = ConnectionManager.getConnection();
+	        	    PreparedStatement  preparedStatement = connection.prepareStatement(query);
+	        	    preparedStatement.setString(1, email);
+	        	    preparedStatement.setString(2, password);
+	        	    ResultSet rs = preparedStatement.executeQuery();
+	        	  
+	        	    if (rs.next()) {
+	        	            // Passwords match, authentication successful
+	        	    
+	        	            User user = new User();
+	        	            user.setUserId(rs.getInt("u_id"));
+	        	            user.setFirstName(rs.getString("first_name"));
+	        	            user.setLastName(rs.getString("last_name"));
+	        	            user.setMobileNumber(rs.getString("mobilenumber"));
+	        	            user.setEmail(rs.getString("email"));
+	        	            user.setPassword(rs.getString("password"));
+	        	            user.setRole(rs.getString("u_roles"));
+
+	        	            HttpSession session = request.getSession();
+	        	            session.setAttribute("userObj", user);
+	        	            //password matches it logs in  
+	        	            response.sendRedirect("index.jsp");
+	        	            rs.close();
+	        	            preparedStatement.close();
+	        	            connection.close();
+	        	            
+	        	        } else {
+	        	            // Passwords don't match, authentication failed
+	        	            response.sendRedirect("LoginRegister.jsp?error=1");
+	        	        }
+	        	    
+	        	} catch (Exception e) {
+	        	    e.printStackTrace();
+	        	    response.sendRedirect("LoginRegister.jsp?error=Database error");
+	        	} 
+
+				              
+		    			//ResultSet rs = preparedStatement.executeQuery();
 			    			
 
-			    			if (rs.next()) {
-												
-			    				
-			    				 // Create a new User object to hold user data
-			    		        User user = new User();			    		        
-			    		        // Retrieve data from the ResultSet and set it in the User object
-			    			    
-			    			    user.setUserId(rs.getInt("u_id"));
-			    		        user.setFirstName(rs.getString("first_name"));
-			    		        user.setLastName(rs.getString("last_name"));
-			    		        user.setMobileNumber(rs.getString("mobilenumber"));
-			    		        user.setEmail(rs.getString("email"));
-			    		        user.setPassword(rs.getString("password"));
-			    		        user.setRole(rs.getString("u_roles"));
-			     
-			   				 	HttpSession session = request.getSession();
-			   				 
-			   				 	session.setAttribute("userObj", user);
-			   				 
-							    response.sendRedirect("index.jsp");
-							    
-							} else {
-								response.sendRedirect("LoginRegister.jsp?error=1");
-							}
-						
-			    			System.out.println(preparedStatement);
-			    			
+//			    			if (rs.next()) {
+//												
+//			    				
+//			    				 // Create a new User object to hold user data
+//			    		        User user = new User();			    		        
+//			    		        // Retrieve data from the ResultSet and set it in the User object
+//			    			    
+//			    			    user.setUserId(rs.getInt("u_id"));
+//			    		        user.setFirstName(rs.getString("first_name"));
+//			    		        user.setLastName(rs.getString("last_name"));
+//			    		        user.setMobileNumber(rs.getString("mobilenumber"));
+//			    		        user.setEmail(rs.getString("email"));
+//			    		        user.setPassword(rs.getString("password"));
+//			    		        user.setRole(rs.getString("u_roles"));
+//			     
+//			   				 	HttpSession session = request.getSession();
+//			   				 
+//			   				 	session.setAttribute("userObj", user);
+//			   				 
+//							    response.sendRedirect("index.jsp");
+//							    
+//							} else {
+//								response.sendRedirect("LoginRegister.jsp?error=1");
+//							}
+//						
+//			    			System.out.println(preparedStatement);
+//			    			
 			    		
 			            
-			    			
-							
-							
-							
-			    		} catch (ClassNotFoundException | SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	            
 	        } else if (action.equals("register")) {
 	        	
 	        	
@@ -129,9 +144,15 @@ public class LoginRegisterServlet extends HttpServlet {
 	            	
 					response.sendRedirect("LoginRegister.jsp?emailAlready=1");
 	                
-	            } else {
+	            }
+	            else if (mobileNumberExists(mobile)) {
+	            	response.sendRedirect("LoginRegister.jsp?mobileAlready=1");
+	            }
+	            else {
 	                // Add new user to database or perform registration action
+	            	
 	                registerUser(fname,lname,mobile,email,password,roles);
+	                
 	                response.sendRedirect("LoginRegister.jsp");
 	            }
 	        }
@@ -143,11 +164,9 @@ public class LoginRegisterServlet extends HttpServlet {
 			private boolean userExists(String email) {
 				
 			    String CHECK_USER_QUERY = "SELECT * FROM tbl_users WHERE email = ?";
-			    
 			    try {
 			    	
-			        Class.forName(jdbcDriver);
-			        Connection connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+			        Connection connection = ConnectionManager.getConnection();
 			        
 			        PreparedStatement checkUserStmt = connection.prepareStatement(CHECK_USER_QUERY);
 			        checkUserStmt.setString(1, email);
@@ -164,11 +183,38 @@ public class LoginRegisterServlet extends HttpServlet {
 			        
 			        return userExists;
 			        
-			    } catch (ClassNotFoundException | SQLException e) {
+			    } catch (SQLException e) {
 			        e.printStackTrace();
 			        return false;
 			    }
 			}
+			
+			private boolean mobileNumberExists(String mobile) {
+			    String CHECK_USER_MOBILE = "SELECT * FROM tbl_users WHERE mobileNumber = ?";
+			    
+			    try {
+			        Connection connection = ConnectionManager.getConnection();
+			        PreparedStatement checkMobileStmt = connection.prepareStatement(CHECK_USER_MOBILE);
+			        checkMobileStmt.setString(1, mobile);
+			        
+			        ResultSet rs = checkMobileStmt.executeQuery();
+			        
+			        boolean mobileExists = rs.next();
+			        
+			        // Close resources
+			        rs.close();
+			        checkMobileStmt.close();
+			        connection.close();
+			        
+			        return mobileExists;
+			        
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			        return false;
+			    }
+			}
+
+
 
 			
 			 private void registerUser(String fname, String lname, String mobile, String email, String password, String roles) {
@@ -177,23 +223,14 @@ public class LoginRegisterServlet extends HttpServlet {
 			
 				
 					try {
-						 
 						
 						User newUser = new User(fname,lname,mobile,email,password,roles);
-			
-						    userDao.insertUser(newUser);
-			//				HttpSession session = request.getSession();
-			//				 
-			//				
-			//				session.setAttribute("userObj", newUser);
-			
-							 //	session.setAttribute("firstname",fname);
-							 
-			
 						
+						    userDao.insertUser(newUser);
+			
 						
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					}
 			}
