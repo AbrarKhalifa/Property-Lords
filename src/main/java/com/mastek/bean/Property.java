@@ -1,100 +1,79 @@
 package com.mastek.bean;
 
+import java.util.List;
+
 public class Property {
 
 
-	    private int propertyId;
-	    //private User owner; // Using User class instead of int for 'u_id_fk'
-	    private int agent_id_fk;
-	    private String propertyType;
-	    private String proSize;
-	    private double price;
-	    private String features;
-	    private int noOfRooms;
-	    private int noOfKitchens;
-	    private int noOfBathrooms;
-	    private String amenities;
-	    private String status;
-	    private String purpose;
-//	    private List<PropertyImage> images; // multiple property images
-//	    private PropertyAddress addresses; // List of property addresses
-//	    private PropertyDocument documents; // List of property documents
-	    
-	    
-	    private String Address;  // for display whole data to screen
-	    private String imageData;  // additional 
-	    
+    private int propertyId;
+    private User owner; 
+    private String propertyType;
+    private String proSize;
+    private double price;
+    private String features;
+    private int noOfRooms;
+    private int noOfKitchens;
+    private int noOfBathrooms;
+    private String amenities;
+    private String status;
+    private String purpose;
+    private List<PropertyImage> images; // List of property images
+    private PropertyAddress address; // Single address
+    private PropertyDocument document; // Single Document
 
+    public Property() {
+    }
 
-	    // Getters and setters (omitted for brevity)
-	  
+    public Property(User owner, String propertyType, String proSize, double price, String features, int noOfRooms,
+                     int noOfKitchens, int noOfBathrooms, String amenities, String status, String purpose, PropertyAddress address, List<PropertyImage> images,PropertyDocument document) {
+        this.owner = owner;
+        this.propertyType = propertyType;
+        this.proSize = proSize;
+        this.price = price;
+        this.features = features;
+        this.noOfRooms = noOfRooms;
+        this.noOfKitchens = noOfKitchens;
+        this.noOfBathrooms = noOfBathrooms;
+        this.amenities = amenities;
+        this.status = status;
+        this.purpose = purpose;
+        this.address = address;
+        this.images = images;
+        this.document = document;
+    }
 
+    public Property(int propertyId, User owner, String propertyType, String proSize, double price, String features,
+                     int noOfRooms, int noOfKitchens, int noOfBathrooms, String amenities, String status, String purpose, PropertyAddress address, List<PropertyImage> images,PropertyDocument document) {
+        this.propertyId = propertyId;
+        this.owner = owner;
+        this.propertyType = propertyType;
+        this.proSize = proSize;
+        this.price = price;
+        this.features = features;
+        this.noOfRooms = noOfRooms;
+        this.noOfKitchens = noOfKitchens;
+        this.noOfBathrooms = noOfBathrooms;
+        this.amenities = amenities;
+        this.status = status;
+        this.purpose = purpose;
+        this.address = address;
+        this.images = images;
+        this.document = document;
 
-		public Property() {
-	    };
-	    
-	   
-//	    public void addImage(PropertyImage image) {
-//
-//	    	this.images.add(image);
-//
-//	    }
-	    
-	    
-	    public Property(User owner,String propertyType, String proSize, double price, String features, int noOfRooms,
-				int noOfKitchens, int noOfBathrooms, String amenities, String status, String purpose) {  //PropertyAddress addresses, PropertyDocument documents
-			super();
-			this.agent_id_fk = owner.getUserId();
-			this.propertyType = propertyType;
-			this.proSize = proSize;
-			this.price = price;
-			this.features = features;
-			this.noOfRooms = noOfRooms;
-			this.noOfKitchens = noOfKitchens;
-			this.noOfBathrooms = noOfBathrooms;
-			this.amenities = amenities;
-			this.status = status;
-			this.purpose = purpose;
-//			this.images = new ArrayList<>();
-//			this.addresses = addresses;
-//			this.documents = documents;
-		}
-	    
+    }
 
-	    public Property(int propertyId,User owner, String propertyType, String proSize, double price, String features,
-	                     int noOfRooms, int noOfKitchens, int noOfBathrooms, String amenities, String status, String purpose) { //  PropertyAddress addresses, PropertyDocument documents
-	        this.propertyId = propertyId;
-			this.agent_id_fk = owner.getUserId();
-	        this.propertyType = propertyType;
-	        this.proSize = proSize;
-	        this.price = price;
-	        this.features = features;
-	        this.noOfRooms = noOfRooms;
-	        this.noOfKitchens = noOfKitchens;
-	        this.noOfBathrooms = noOfBathrooms;
-	        this.amenities = amenities;
-	        this.status = status;
-	        this.purpose = purpose;
-//	        this.images = new ArrayList<>();
-//	        this.addresses = addresses;
-//	        this.documents = documents;
-	    }
+    
+    
+		
+	//	{	    	this.agent_id_fk = owner.getUserId();}
 
-	   
+		public User getOwner() {
+		return owner;
+	}
+		
+		
 
-		// Methods for adding and managing images, addresses, and documents (omitted for brevity)
-
-	    public int getAgent_id_fk() {
-			return agent_id_fk;
-		}
-
-
-		public void setAgent_id_fk(User owner) {
-			this.agent_id_fk = owner.getUserId();
-		}
-
-
-		public int getPropertyId() {
+	public int getPropertyId() {
 			return propertyId;
 		}
 
@@ -102,141 +81,119 @@ public class Property {
 			this.propertyId = propertyId;
 		}
 
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
 
-		public String getPropertyType() {
-			return propertyType;
-		}
+	public String getPropertyType() {
+		return propertyType;
+	}
 
-		public void setPropertyType(String propertyType) {
-			this.propertyType = propertyType;
-		}
+	public void setPropertyType(String propertyType) {
+		this.propertyType = propertyType;
+	}
 
-		public String getProSize() {
-			return proSize;
-		}
+	public String getProSize() {
+		return proSize;
+	}
 
-		public void setProSize(String proSize) {
-			this.proSize = proSize;
-		}
+	public void setProSize(String proSize) {
+		this.proSize = proSize;
+	}
 
-		public double getPrice() {
-			return price;
-		}
+	public double getPrice() {
+		return price;
+	}
 
-		public void setPrice(double price) {
-			this.price = price;
-		}
+	public void setPrice(double price) {
+		this.price = price;
+	}
 
-		public String getFeatures() {
-			return features;
-		}
+	public String getFeatures() {
+		return features;
+	}
 
-		public void setFeatures(String features) {
-			this.features = features;
-		}
+	public void setFeatures(String features) {
+		this.features = features;
+	}
 
-		public int getNoOfRooms() {
-			return noOfRooms;
-		}
+	public int getNoOfRooms() {
+		return noOfRooms;
+	}
 
-		public void setNoOfRooms(int noOfRooms) {
-			this.noOfRooms = noOfRooms;
-		}
+	public void setNoOfRooms(int noOfRooms) {
+		this.noOfRooms = noOfRooms;
+	}
 
-		public int getNoOfKitchens() {
-			return noOfKitchens;
-		}
+	public int getNoOfKitchens() {
+		return noOfKitchens;
+	}
 
-		public void setNoOfKitchens(int noOfKitchens) {
-			this.noOfKitchens = noOfKitchens;
-		}
+	public void setNoOfKitchens(int noOfKitchens) {
+		this.noOfKitchens = noOfKitchens;
+	}
 
-		public int getNoOfBathrooms() {
-			return noOfBathrooms;
-		}
+	public int getNoOfBathrooms() {
+		return noOfBathrooms;
+	}
 
-		public void setNoOfBathrooms(int noOfBathrooms) {
-			this.noOfBathrooms = noOfBathrooms;
-		}
+	public void setNoOfBathrooms(int noOfBathrooms) {
+		this.noOfBathrooms = noOfBathrooms;
+	}
 
-		public String getAmenities() {
-			return amenities;
-		}
+	public String getAmenities() {
+		return amenities;
+	}
 
-		public void setAmenities(String amenities) {
-			this.amenities = amenities;
-		}
+	public void setAmenities(String amenities) {
+		this.amenities = amenities;
+	}
 
-		public String getStatus() {
-			return status;
-		}
+	public String getStatus() {
+		return status;
+	}
 
-		public void setStatus(String status) {
-			this.status = status;
-		}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-		public String getPurpose() {
-			return purpose;
-		}
+	public String getPurpose() {
+		return purpose;
+	}
 
-		public void setPurpose(String purpose) {
-			this.purpose = purpose;
-		}
-		
-		
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
+	}
 
+	public List<PropertyImage> getImages() {
+		return images;
+	}
 
-	    public String getAddress() {
-			return Address;
-		}
+	public void setImages(List<PropertyImage> images) {
+		this.images = images;
+	}
 
-		public void setAddress(String address) {
-			Address = address;
-		}
+	public PropertyAddress getAddress() {
+		return address;
+	}
 
-		  
-	    public String getImageData() {
-			return imageData;
-		}
+	public void setAddress(PropertyAddress address) {
+		this.address = address;
+	}
 
+	public PropertyDocument getDocument() {
+		return document;
+	}
 
-		public void setImageData(String imageData) {
-			this.imageData = imageData;
-		}
-		
-//
-//		public List<PropertyImage> getImages() {
-//			return images;
-//		}
-//
-//		public void setImages(List<PropertyImage> images) {
-//			this.images = images;
-//		}
-//
-//		public PropertyAddress getAddresses() {
-//			return addresses;
-//		}
-//
-//		public void setAddresses(PropertyAddress addresses) {
-//			this.addresses = addresses;
-//		}
-//
-//		public PropertyDocument getDocuments() {
-//			return documents;
-//		}
-//
-//		public void setDocuments(PropertyDocument documents) {
-//			this.documents = documents;
-//		}
-		
-	//	{	    	this.agent_id_fk = owner.getUserId();}
+	public void setDocument(PropertyDocument document) {
+		this.document = document;
+	}
 
 		@Override
 	    public String toString() {
 	        return "Property{" +
 	                "propertyId=" + propertyId +
-	                ", ownerId="+ agent_id_fk+
-	               // ", owner=" + owner +
+	                ", owner=" + owner +
 	                ", propertyType='" + propertyType + '\'' +
 	                ", proSize='" + proSize + '\'' +
 	                ", price=" + price +
@@ -249,6 +206,9 @@ public class Property {
 	                ", purpose='" + purpose + '\'' +
 	                '}';
 	    }
+		
+		
+
 	}
 
 	

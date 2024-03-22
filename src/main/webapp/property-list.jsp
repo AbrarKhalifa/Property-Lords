@@ -3,6 +3,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.mastek.bean.Property" %>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,7 +30,7 @@
     <link href="lib/animate/animate.min.css" rel="stylesheet">
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
+    <!-- Customized Bootstrap Stylesheet -->	
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
@@ -37,8 +38,13 @@
 </head>
 
 <body>
-       		 <jsp:include page="navbar.jsp" />
 
+ 
+  
+       		 <jsp:include page="navbar.jsp" />	
+       		 
+   
+ 
 <!--  -->
         <!-- Header Start -->
         <div class="container-fluid header bg-white p-0">
@@ -127,47 +133,24 @@
                         
                         <!--  -->
                         
-                        
-<%--   <h2>Property List</h2>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Type</th>
-            <th>Purpose</th>
-            <th>Price</th>
-            <th>Total Rooms</th>
-            <th>Total Kitchen</th>
-            <th>Total Bathroom</th>
-            <th>Address</th>
-            <th>Image</th>
-        </tr>
-        <c:forEach items="${properties}" var="property">
-            <tr>
-                <td>${property.propertyId}</td>
-                <td>${property.propertyType}</td>
-                <td>${property.purpose}</td>
-                <td>${property.price}</td>
-                <td>${property.noOfRooms}</td>
-                <td>${property.noOfKitchens}</td>
-                <td>${property.noOfBathrooms}</td>
-                <td>${property.address}</td>
-                 <td><img src="${property.imageData}" alt="Property Image" style="max-width: 100px;"></td>
-            </tr>
-        </c:forEach>
-    </table>  --%>
-    
-		                                    
-		   <c:forEach items="${properties}" var="property">
+                     
+                     
+                     <!-- It will display data of property list -->
+                     <jsp:include page="propertyListPartialView.jsp" />	
+                     
+                              
+               
+		<%--    <c:forEach items="${properties}" var="property">
 		    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
 		        <div class="property-item rounded overflow-hidden">
 		            <div class="position-relative overflow-hidden">
-		                <a href=""><img class="img-fluid" src="${property.imageData}" style="width: 450px; height: 300px;" alt=""></a> <!-- Set width and height as per your requirement -->
+		                <a href="propertyDescServlet?propertyId=${property.propertyId}"><img class="img-fluid" src="${property.imageData}" style="width: 450px; height: 300px;" alt=""></a> <!-- Set width and height as per your requirement -->
 		                <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">For ${property.purpose}</div>
 		                <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">${property.propertyType}</div>
 		            </div>
 		            <div class="p-4 pb-0">
 		                <h5 class="text-primary mb-3">${property.price}$</h5>
-		                <a class="d-block h5 mb-2" href="property-desc.jsp">New ${property.propertyType} For ${property.purpose}</a>
+		                <a class="d-block h5 mb-2" href="propertyDescServlet?propertyId=${property.propertyId}">New ${property.propertyType} For ${property.purpose}</a>
 		                <p><i class="fa fa-map-marker-alt text-primary me-2"></i>${property.address}</p>
 		            </div>
 		            <div class="d-flex border-top">
@@ -177,10 +160,9 @@
 		            </div>
 		        </div>
 		    </div>
-		</c:forEach>
-                                    
+		</c:forEach>                  
+                         --%>    
                             
-                            <!--  -->
                            
            
                             <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">

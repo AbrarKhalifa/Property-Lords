@@ -7,13 +7,13 @@ import java.sql.SQLException;
 import com.mastek.bean.PropertyDocument;
 
 public class PropertyDocDAO {
-	public void insertPropertyDocs(PropertyDocument propertyDoc) {
+	public void insertPropertyDocs(int propertyId_fk,PropertyDocument propertyDoc) {
         String query = "INSERT INTO TBL_PROPERTY_DOC (PROPERTY_ID_FK, PRO_DOC_IMAGE) VALUES (:1 , :2 )";
         
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            preparedStatement.setInt(1, propertyDoc.getProperty_id_fk());
+            preparedStatement.setInt(1, propertyId_fk);
             preparedStatement.setString(2, propertyDoc.getDocumentImage());
             
 

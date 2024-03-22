@@ -3,47 +3,38 @@ package com.mastek.bean;
 public class PropertyAddress {
 
     private int addressId;
-    private int property_id_fk;;
     private String landmark;
     private String society;
     private String city;
     private String state;
-    private String pincode; // Added "pincode" field
+    private String pincode; 
     
-    
-
-    // Getters and setters (omitted for brevity)
-
+    	
 	public PropertyAddress() {};
-    
-    public PropertyAddress(Property property,String landmark,String society, String city, String state, String pincode) {
-        this.property_id_fk = property.getPropertyId();
-        this.landmark = landmark;
-        this.society = society;
-        this.city = city;
-        this.state = state;
-        this.pincode = pincode;
-    }
-    
-    public PropertyAddress(int addressId,Property property,String landmark, String society, String city, String state, String pincode) {
-        this.property_id_fk = property.getPropertyId();
-    	this.addressId = addressId;
-        this.landmark = landmark;
-        this.society = society;
-        this.city = city;
-        this.state = state;
-        this.pincode = pincode;
-    }
-    
-    
+	
+	
+	
+		    
+		public PropertyAddress(String landmark, String society, String city, String state, String pincode) {
+				super();
+				this.landmark = landmark;
+				this.society = society;
+				this.city = city;
+				this.state = state;
+				this.pincode = pincode;
+			}
 
-    public int getProperty_id_fk() {
-		return property_id_fk;
-	}
+		public PropertyAddress(int addressId, String landmark, String society, String city, String state, String pincode) {
+			super();
+			this.addressId = addressId;
+			this.landmark = landmark;
+			this.society = society;
+			this.city = city;
+			this.state = state;
+			this.pincode = pincode;
+		}
 
-	public void setProperty_id_fk(Property property) {
-		this.property_id_fk = property.getPropertyId();
-	}
+
 
 	public int getAddressId() {
 		return addressId;
@@ -99,7 +90,6 @@ public class PropertyAddress {
     public String toString() {
         return "PropertyAddress{" +
                 "addressId=" + addressId +
-                ", propertyId=" + property_id_fk +
                 ", landmark='" + landmark + '\'' +
                 ", society='" + society + '\'' +
                 ", city='" + city + '\'' +

@@ -7,13 +7,13 @@ import java.sql.SQLException;
 import com.mastek.bean.PropertyAddress;
 
 public class PropertyAddressDAO {
-	 public void insertProperty(PropertyAddress propertyAddress) {
+	 public void insertProperty(int property_id_fk,PropertyAddress propertyAddress) {
 	        String query = "INSERT INTO TBL_PROPERTY_ADD (PROPERTY_ID_FK, LANDMARK, SOCIETY, CITY, STATES, PINCODE) VALUES (:1 , :2 , :3 , :4 , :5 , :6 )";
 	        
 	        try (Connection connection = ConnectionManager.getConnection();
 	             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-	            preparedStatement.setInt(1, propertyAddress.getProperty_id_fk());
+	            preparedStatement.setInt(1, property_id_fk);
 	            preparedStatement.setString(2, propertyAddress.getLandmark());
 	            preparedStatement.setString(3, propertyAddress.getSociety());
 	            preparedStatement.setString(4, propertyAddress.getCity());

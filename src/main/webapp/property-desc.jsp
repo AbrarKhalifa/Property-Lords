@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <!DOCTYPE html>
+    
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+    
 <html lang="en">
 
 <head>
@@ -20,65 +23,65 @@
         <div class="row no-gutters">
             <div class="col-md-6 mt-5">
                 <div class="property-details slideshow-container">
-    				<div class="rent-box">For Rent</div>
-                    <img class="mySlides" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvkAfvtuzppuSMZBa9xVGcIDX_8eua8vt6EA&s" alt="Property Image">
-                    <img class="mySlides" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj-Cm02k-HZVw-r_KXgXAMKHYdMOGLYYOnlA&s" alt="Property Image">
-                    <img class="mySlides" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRbcrj53mGyk-u4JwrIb6z1RBAeCpxR78gfQ&s" alt="Property Image">
+    				<div class="rent-box">For ${propertyDesc.purpose}</div> 	 
+    				
+    				 <c:forEach items="${propertyDesc.images}" var="image">
+			            <img src="${image.url}" class="mySlides" alt="Property Image">
+			        </c:forEach>
+                  
                     <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
                     <a class="next" onclick="plusSlides(1)">&#10095;</a>
                 </div>
             </div>
             <div class="col-md-6 mt-5">
-            	<div class="property-details">
-                <div class="property-info">
+                <div class="property-info property-details" >
                     <h2 class="text-white">Property Information</h2>
-                    <a href="other_page.html">
+                    <a href="property-list.jsp">
                         <div class="back-arrow" >
+                        
+                          
 							<i class="fa fa-arrow-left" style="color:white" aria-hidden="true"></i>
                             <div class="tooltip">Back To Home</div>
                         </div>
                     </a>
                     
-                    <div class="table-responsive">
+                    <div class="table-responsive" >
                         <table class="table text-white">
                             <tbody>
                             <tr>
+                            
+                             
                                <td><strong>Property type:</strong></td>
-                                    <td><Strong>House</Strong></td>
+                                    <td><Strong> ${propertyDesc.propertyType}</Strong></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Features:</strong></td>
-                                    <td><strong>Semi Furnished</strong></td>
+                                    <td><strong>${propertyDesc.features}</strong></td>
                                 </tr>
                                 
                                 <tr>
                                     <td><strong>Size:</strong></td>
-                                    <td><strong>4000sqft</strong></td>
+                                    <td><strong>${propertyDesc.proSize} sqft</strong></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Rooms:</strong></td>
-                                    <td><Strong>3</Strong></td>
+                                    <td><Strong>${propertyDesc.noOfRooms}</Strong></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Kitchens:</strong></td>
-                                    <td><strong>1</strong></td>
+                                    <td><strong>${propertyDesc.noOfKitchens}</strong></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Bathrooms:</strong></td>
-                                    <td><strong>2</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Status:</strong></td>
-                                    <td><strong>Available</strong></td>
+                                    <td><strong>${propertyDesc.noOfBathrooms}</strong></td>
                                 </tr>
                                 <tr>
                                     <td><strong>price:</strong></td>
-                                    <td><strong>250000</strong></td>
+                                    <td><strong>${propertyDesc.price}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
@@ -86,22 +89,27 @@
     
     <div class="location-info">
         <h2 class="text-white">Amenities</h2>
+        
         <div class="amenity-box ">
-            <div class="amenity"><strong>Parking</strong></div>
+              <c:forEach var="amenity" items="${amenities}">
+                 <div class="amenity"><strong><c:out value="${amenity}"/></strong></div>
+              
+     	  	  </c:forEach>
+     	<!-- 
             <div class="amenity"><strong>Garden</strong></div>
             <div class="amenity"><strong>Pool</strong></div>
             <div class="amenity"><strong>Gym</strong></div>
             <div class="amenity"><strong>Lift</strong></div>
-            <div class="amenity"><strong>Swimming Pool</strong></div>
+            <div class="amenity"><strong>Swimming Pool</strong></div> -->
         </div>
     </div>
     <div class="location-info">
         <h2 class="text-white">Location Information</h2>
         <div class="amenity-box">
-            <div class="amenity"><strong>Address:</strong> Kataria Arcade</div>
-            <div class="amenity"><strong>City:</strong> Ahmedabad</div>
-            <div class="amenity"><strong>State:</strong>  Gujarat</div>
-            <div class="amenity"><strong>Pin Code:</strong> 506223</div>
+            <div class="amenity"><strong>Society: ${propertyDesc.addresses.society}</strong></div>
+            <div class="amenity"><strong>City: ${propertyDesc.addresses.city}</strong></div>
+            <div class="amenity"><strong>State:  ${propertyDesc.addresses.state}</strong></div>
+            <div class="amenity"><strong>Pin Code: ${propertyDesc.addresses.pincode}</strong></div>
         </div>
     </div>
     
