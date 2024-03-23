@@ -1,79 +1,55 @@
 package com.mastek.bean;
 
-import java.util.*;
-
 public class PropertyImage {
 
-    private int imageId;
-    private int property_id_fk;
-    private List<String> images; // multiple property images
+	    private int imageId;
+	    private Property property; 
+	    private String Url;
 
+	    public PropertyImage() {
+	    }
 
-    public PropertyImage() {
-    	this.images = new ArrayList<>();
-    	
-    };
-    
-    public PropertyImage(Property property) {
-        this.property_id_fk = property.getPropertyId();
-        this.images = new ArrayList<>();
-        
-    }
-    
-    public PropertyImage(int imageId,Property property) {
-        this.imageId = imageId;
-        this.property_id_fk = property.getPropertyId();
-        this.images = new ArrayList<>();
-    }
-    
-    
+	    public PropertyImage(Property property, String url) {
+	        this.property = property;
+	        this.Url = url;
+	    }
 
-    public int getProperty_id_fk() {
-		return property_id_fk;
+	    public PropertyImage(int imageId, Property property, String url) {
+	        this.imageId = imageId;
+	        this.property = property;
+	        this.Url = url;
+	    }
+
+	    // Getters and setters for all fields
+	    
+	    
+	    public Property getProperty() {
+			return property;
+		}
+
+		public void setProperty(Property property) {
+			this.property = property;
+		}
+
+		public String getUrl() {
+			return Url;
+		}
+
+		public void setUrl(String url) {
+			Url = url;
+		}
+	    
+
+	    @Override
+	    public String toString() {
+	        return "PropertyImage{" +
+	                "imageId=" + imageId +
+	                ", property=" + property +
+	                ", url='" + Url + '\'' +
+	                '}';
+	    }
+
+		
 	}
 
-	public void setProperty_id_fk(Property property) {
-		this.property_id_fk = property.getPropertyId();
-	}
-
-	public int getImageId() {
-		return imageId;
-	}
-
-	public void setImageId(int imageId) {
-		this.imageId = imageId;
-	}
-
-	
-	 // Getter
-    public List<String> getImages() {
-        return images;
-    }
-
-    // Setter
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-    
-    // Add single image to the list
-    public void addSingleImage(String image) {
-        this.images.add(image);
-    }
-
-    // Remove single image from the list
-    public void removeSingleImage(String image) {
-        this.images.remove(image);
-    }
-
-	
-	
-	@Override
-    public String toString() {
-        return "PropertyImage{" +
-                "imageId=" + imageId +
-                ", PropertyId=" + property_id_fk +
-                ", image='" + images + '\'' +
-                '}';
-    }
-}
 

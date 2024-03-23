@@ -92,7 +92,7 @@
             		<div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello, <%= user.getFirstName() %></a>
                             <div class="dropdown-menu rounded-0 m-0">
-                                <a href="logoutServlet" class="px-3 d-none d-lg-flex"> Logout </a>
+                                <a href="LogoutServlet" class="px-3 d-none d-lg-flex"> Logout </a>
                                 
                             </div>
                         </div>

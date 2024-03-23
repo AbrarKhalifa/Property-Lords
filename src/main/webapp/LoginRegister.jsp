@@ -15,18 +15,33 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-	$(document).ready(function() {
-		$("#registerLink").click(function() {
-			$("#loginForm").hide();
-			$("#registerForm").show();
-		});
+$(document).ready(function() {
+    // Toggle between Login, Registration, and Reset Password forms
+    $("#registerLink").click(function() {
+        $("#loginForm").hide();
+        $("#registerForm").show();
+        $("#resetPasswordForm").hide(); // Hide reset password form if shown
+    });
 
-		$("#loginLink").click(function() {
-			$("#registerForm").hide();
-			$("#loginForm").show();
-		});
-	});
+    $("#loginLink").click(function() {
+        $("#registerForm").hide();
+        $("#loginForm").show();
+        $("#resetPasswordForm").hide(); // Hide reset password form if shown
+    });
+
+    $("#resetPasswordLink").click(function() {
+        $("#loginForm").hide();
+        $("#registerForm").hide();
+        $("#resetPasswordForm").show();
+    });
+    $("#resetPasswordForm #loginLink").click(function() {
+        $("#loginForm").show();
+        $("#registerForm").hide();
+        $("#resetPasswordForm").hide();
+    });
+});
 </script>
+
 
 <!-- Your custom CSS overrides (if any) -->
 <style>
@@ -69,22 +84,40 @@
     String error = request.getParameter("error");
     String emailAlready = request.getParameter("emailAlready");
     String mobileAlready = request.getParameter("mobileAlready");
+    String registrationSuccessfull = request.getParameter("registrationSuccessfull");
+    String  emailnotExist =request.getParameter("emailNotExist");
+    String  passwordResetSuccess =request.getParameter("passwordResetSuccess");
+    
     
     if (error != null && error.equals("1")) {
-	%>
+%>
      <div id="errorAlert" class="alert alert-danger" role="alert">Invalid Email or Password. Please try again.</div>
 <%
     }
-     if (emailAlready != null && emailAlready.equals("1")) {
-    	%>
-        <div id="emailAlert" class="alert alert-danger" role="alert">Email Already Registered please login..</div>
-    <%
-        }
-    if (mobileAlready != null && mobileAlready.equals("1")) {
+    if (emailAlready != null && emailAlready.equals("1")) {
 %>
-    <div id="mobileAlert" class="alert alert-danger" role="alert">Mobile Number Already Registered. Please try with other mobile Number..</div>
+        <div id="emailAlert" class="alert alert-danger" role="alert">Email Already Registered please login..</div>
 <%
     }
+    if (mobileAlready != null && mobileAlready.equals("1")) {
+%>
+    <div id="mobileAlert" class="alert alert-danger" role="alert">Mobile Number Already Registered. Please try with another mobile Number..</div>
+<%
+    } 
+    if (registrationSuccessfull != null && registrationSuccessfull.equals("1")) { 
+%>
+        <div id="registrationSuccessfullAlert" class="alert alert-success" role="alert">Registration Successful. Please Login..</div> <!-- Corrected text -->
+<%
+    }    if (emailnotExist != null && emailnotExist.equals("1")) { 
+%>
+        <div id="emailnotExistAlert" class="alert alert-danger" role="alert">Email Doesn't Exist Please register.. </div> <!-- Corrected text -->
+<%
+    }
+    if (passwordResetSuccess != null && passwordResetSuccess.equals("1")) { 
+    	%>
+    	        <div id="passwordResetSuccessAlert" class="alert alert-success" role="alert">Password Reset Successfull .. </div> <!-- Corrected text -->
+    	<%
+    	    }
 %>
 
 	<div id="loginForm">
@@ -136,7 +169,7 @@
 										id="form2Example3" /> <label class="form-check-label"
 										for="form2Example3"> Remember me </label>
 								</div>
-								<a href="" class="text-body">Forgot password?</a>
+								<a href="#" id="resetPasswordLink" class="text-body">Forgot password?</a>
 								<!-- Redirects to the registration page -->
 							</div>
 							<div class="text-center text-lg-start mt-4 pt-2">
@@ -201,7 +234,7 @@
 									type="text" id="mobileNumber" name="mobile"
 									class="form-control form-control-lg"
 									placeholder="Enter your mobile number (10 digits)" required
-									oninput="validateMobileNumber(this); checkIfExists('mobile', this.value);" >
+									oninput="validateMobileNumber(this); " >
 
 								<div id="mobileNumberError" class="text-danger"></div>
 							</div>
@@ -210,7 +243,7 @@
 								<label for="email">Email address:</label> <input type="email"
 									id="email" name="email" class="form-control form-control-lg"
 									placeholder="Enter a valid email address" required
-									oninput="validateEmailAddress(this); checkIfExists('email', this.value);"
+									oninput="validateEmailAddress(this); "
 >
 								<div id="emailError" class="text-danger"></div>
 							</div>
@@ -232,7 +265,6 @@
 									id="userRoles" name="roles"
 									class="form-control form-control-lg" required>
 									<option value="" selected disabled>Select role</option>
-									<option value="admin">Admin</option>
 									<option value="user">User</option>
 									<option value="agent">Agent</option>
 									<option value="landlord">Landlord</option>
@@ -264,6 +296,61 @@
 
 		</section>
 	</div>
+	<!--  Resetting password  -->
+	<div id="resetPasswordForm" style="display: none;">
+    <section class="vh-100">
+        <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image">
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                    <div class="divider d-flex align-items-center my-4">
+                        <p class="text-center fw-bold mx-3 mb-0">Reset Password</p>
+                    </div>
+                    <form id="resetPassword" action="LoginRegisterServlet" method="POST">
+                        <input type="hidden" name="action" value="reset">
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="resetEmail">Email address</label>
+                            <input type="email" id="resetEmail" name="resetEmail" class="form-control form-control-lg" placeholder="Enter your email address" required>
+                        </div>
+                        <!-- New Password input -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="newPassword">New Password</label>
+                            <div class="input-group">
+                            <input type="password" id="newPassword" name="newPassword" class="form-control form-control-lg" placeholder="Enter your new password" required oninput="validateNewPassword(this)">
+                            <button class="btn btn-outline-secondary toggle-password" type="button" id="toggleRegisterPassword">
+								<i class="bi bi-eye" style="border: none;"></i>
+							</button>
+							</div>
+							<div id="newPasswordError" class="text-danger"></div>
+                        </div>
+                        <!-- Confirm Password input -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="confirmPassword">Confirm Password</label>
+                            <div class="input-group">
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control form-control-lg" placeholder="Confirm your new password" required oninput="validateConfirmPassword(this)">
+                            <button class="btn btn-outline-secondary toggle-password" type="button" id="toggleRegisterPassword">
+							<i class="bi bi-eye" style="border: none;"></i>
+							</button>
+							</div>
+							<div id="confirmPasswordError" class="text-danger"></div>
+                        </div>
+                        <div class="text-center text-lg-start mt-4 pt-2">
+                            <input type="submit" value="Reset Password" class="btn btn-primary btn-lg" value="Reset Password" style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                            <p class="small fw-bold mt-2 pt-1 mb-0">
+                                <a href="#" id="loginLink" class="link-danger">Back to Login</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+	
+	
 
 	<script>
 	//Validation
@@ -331,7 +418,10 @@
 			} else if (!/^\d{10}$/.test(mobileNumber)) {
 				errorElement.textContent = "Mobile number Should not contain alphabets or special charaters.";
 				input.setCustomValidity("Mobile number Should not contain alphabets or special characters.");
-			} else {
+			} else if (!/^[6-9]\d{9}$/.test(mobileNumber)) {
+		        errorElement.textContent = "Enter Correct mobile Number";
+		        input.setCustomValidity("Enter Correct Mobile number");
+		    }else {
 				errorElement.textContent = "";
 				input.setCustomValidity("");
 			}
@@ -380,8 +470,46 @@
             errorElement.textContent = "";
             input.setCustomValidity("");
         }
-    }
-		 
+    }     //validation for newpassword
+		 function validateNewPassword(input) {
+		        var password = input.value.trim();
+		        var errorElement = document.getElementById("newPasswordError");
+		        var lengthPattern = /.{8,}/; 
+		        var alphanumericPattern = /[a-zA-Z]/; 
+		        var digitPattern = /\d/; 
+		        var specialCharPattern = /[!@#$%^&*(),.?":{}|<>]/; 
+
+		        if (!lengthPattern.test(password)) {
+		            errorElement.textContent = "Password must be at least 8 characters long.";
+		            input.setCustomValidity("Password must be at least 8 characters long.");
+		        } else if (!alphanumericPattern.test(password)) {
+		            errorElement.textContent = "Password must contain at least one letter.";
+		            input.setCustomValidity("Password must contain at least one letter.");
+		        } else if (!digitPattern.test(password)) {
+		            errorElement.textContent = "Password must contain at least one digit.";
+		            input.setCustomValidity("Password must contain at least one digit.");
+		        } else if (!specialCharPattern.test(password)) {
+		            errorElement.textContent = "Password must contain at least one special character.";
+		            input.setCustomValidity("Password must contain at least one special character.");
+		        } else {
+		            errorElement.textContent = "";
+		            input.setCustomValidity("");
+		        }
+		    }
+		//validation for Confirmpassword
+		 function validateConfirmPassword(input) {
+		        var password = input.value.trim();
+		        var errorElement = document.getElementById("confirmPasswordError");
+		        var newpasswordValue = document.getElementById("newPassword").value.trim();
+		        if(!(password===newpasswordValue)){
+		        	errorElement.textContent = "new password and confirm password didn't match.";
+		            input.setCustomValidity("new password and confirm password didn't match.");
+		        }
+		         else {
+		            errorElement.textContent = "";
+		            input.setCustomValidity("");
+		        }
+		    }
 		 
 	//code for eye symbol in password 
 	document.querySelectorAll(".toggle-password").forEach(function(button) {
@@ -408,7 +536,9 @@
         var errorAlert = document.getElementById('errorAlert');
         var emailAlert = document.getElementById('emailAlert');
         var mobileAlert = document.getElementById('mobileAlert');
-        
+        var registrationSuccessfullAlert=  document.getElementById('registrationSuccessfullAlert');
+        var emailnotExist = document.getElementById('emailnotExistAlert');  
+        var passwordResetSuccess = document.getElementById('passwordResetSuccessAlert');
         if (errorAlert) {
             errorAlert.style.display = 'none';
         }
@@ -417,6 +547,12 @@
         }
         if (mobileAlert) {
             mobileAlert.style.display = 'none';
+        }if (registrationSuccessfullAlert) {
+        	registrationSuccessfullAlert.style.display = 'none';
+        }if (emailnotExist) {
+        	emailnotExist.style.display = 'none';
+        }if (passwordResetSuccess) {
+        	passwordResetSuccess.style.display = 'none';
         }
         
     }, 4000); // 4000 milliseconds = 4 seconds

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page import="com.mastek.bean.User" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +11,15 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <%
+    // Check if the user is logged in he should not be able to see add property form/page
+    User user = (User) session.getAttribute("userObj");
+    if (user == null || user.getRole().equals("user")) {
+           	response.sendRedirect("404.jsp");
+        return; // Stop further execution of the page
+    }
+%>
     
     <!-- Your custom CSS overrides (if any) -->
     <style>
@@ -29,6 +39,14 @@
         .h-custom {
             height: calc(100% - 73px);
         }
+        .amenities-checkboxes {
+		    display: flex;
+		    flex-wrap: wrap;
+		}
+		
+		.amenities-checkboxes div {
+		    flex-basis: 50%; /* Two columns */
+		}
         @media (max-width: 450px) {
             .h-custom {
                 height: 100%;
@@ -101,11 +119,17 @@
                                         <div id="priceFeedback" class="invalid-feedback"></div>
                                     </div>
                                     <!-- Features input -->
+                                    
                                     <div class="form-group">
-                                        <label for="features">Features</label>
-                                        <textarea id="features" name="features" class="form-control" rows="3" placeholder="Enter property features" required></textarea>
-                                        <div id="featuresFeedback" class="invalid-feedback"></div>
-                                    </div>
+									    <label for="features">Features</label>
+									    <select id="features" name="features" class="form-select" placeholder="select feature" required>
+									        <option value="">Select property features</option>									    
+									        <option value="Semi-furnished">Semi-furnished</option>
+									        <option value="Fully furnished">Fully furnished</option>
+									        <option value="Non-furnished">Non-furnished</option>
+									    </select>
+									    <div id="featuresFeedback" class="invalid-feedback"></div>
+									</div>
                                     <!-- Number of Rooms input -->
                                     <div class="form-group">
                                         <label for="numRooms">Number of Rooms</label>
@@ -122,14 +146,19 @@
                                         <input type="number" id="numBathrooms" name="numBathrooms" class="form-control" value="1" min="1" required />
                                     </div>
                                     <!-- Property Images upload input -->
-                                    <div class="form-group">
-                                        <label for="propertyImages">Upload Property Images</label>
-                                        <input type="file" id="propertyImages" name="propertyImages" class="form-control" multiple required />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="propertyDocImages">Upload Property Document Images</label>
-                                        <input type="file" id="propertyDocImages" name="propertyDocImages" class="form-control" />
-                                    </div>
+									
+									<div class="form-group">
+									    <label for="propertyImages">Upload Property Images</label> 
+									    <input type="file" id="propertyImages" name="propertyImages" class="form-control image-upload" multiple required />
+									    <div id="propertyImagesError" class="text-danger"></div>
+									</div>
+									<div class="form-group">
+									    <label for="propertyDocImages">Upload Property Document Images</label>
+									    <input type="file" id="propertyDocImages" name="propertyDocImages" class="form-control image-upload" />
+									    <div id="propertyDocImagesError" class="text-danger"></div>
+									</div>
+
+
                                 </form>
                             </div>
 
@@ -165,11 +194,13 @@
                                         <input type="text" id="pincode" name="pincode" class="form-control" placeholder="Enter pincode" pattern="[1-9][0-9]{5}" required />
                                         <div id="pincodeFeedback" class="invalid-feedback">Please enter a valid pincode.</div>
                                     </div>
+                                   
                                     <!-- Amenities input -->
                                     <div class="form-group">
                                         <label for="amenities">Amenities</label>
                                         <input type="text" id="amenities" name="amenities" class="form-control" placeholder="Enter property amenities" required />
                                     </div>
+                                    
                                     <!-- Status input -->
                                     <div class="form-group">
                                         <label for="status">Status</label>
@@ -276,6 +307,43 @@
             document.getElementById('propertyDetailsForm').submit();
         }
     });
+    // function to validate image Extensions
+    function validateImageFileType(input, errorElementId) {
+        var files = input.files;
+        var errorElement = document.getElementById(errorElementId);
+        var allowedExtensions = ["jpg", "jpeg", "png"];
+        var invalidFiles = [];
+
+        for (var i = 0; i < files.length; i++) {
+            var fileName = files[i].name;
+            var fileExtension = fileName.split('.').pop().toLowerCase();
+            if (!allowedExtensions.includes(fileExtension)) {
+                invalidFiles.push(fileName);
+            }
+        }
+
+        if (invalidFiles.length > 0) {
+            var errorMessage = " Only JPG, JPEG, and PNG files are allowed..";
+            errorElement.textContent = errorMessage;
+            input.setCustomValidity(" Only JPG, JPEG, and PNG files are allowed..");
+            return false;
+        } else {
+            errorElement.textContent = ""; 
+            return true;
+        }
+    }
+
+
+    // Event listener for image file input change
+    document.getElementById('propertyImages').addEventListener('change', function() {
+        validateImageFileType(this, 'propertyImagesError');
+    });
+
+    document.getElementById('propertyDocImages').addEventListener('change', function() {
+        validateImageFileType(this, 'propertyDocImagesError');
+    });
+
+
 </script>
 
 

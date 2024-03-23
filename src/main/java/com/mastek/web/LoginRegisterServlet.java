@@ -1,6 +1,7 @@
 package com.mastek.web;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,8 +49,8 @@ public class LoginRegisterServlet extends HttpServlet {
 	        	
 	        	String email = request.getParameter("email");
 	        	
-	        	String password = request.getParameter("password");
-	        	
+	        	String originalpassword = request.getParameter("password");
+	        	       	
 	        	
 
 	        	String query = "SELECT * FROM tbl_users WHERE email = ? and password =?";
@@ -59,7 +60,7 @@ public class LoginRegisterServlet extends HttpServlet {
 	        	    Connection connection = ConnectionManager.getConnection();
 	        	    PreparedStatement  preparedStatement = connection.prepareStatement(query);
 	        	    preparedStatement.setString(1, email);
-	        	    preparedStatement.setString(2, password);
+	        	    preparedStatement.setString(2, UserDao.hashPassword(originalpassword));//passed hashed password in sql query 
 	        	    ResultSet rs = preparedStatement.executeQuery();
 	        	  
 	        	    if (rs.next()) {
@@ -92,43 +93,12 @@ public class LoginRegisterServlet extends HttpServlet {
 	        	    response.sendRedirect("LoginRegister.jsp?error=Database error");
 	        	} 
 
-				              
-		    			//ResultSet rs = preparedStatement.executeQuery();
-			    			
-
-//			    			if (rs.next()) {
-//												
-//			    				
-//			    				 // Create a new User object to hold user data
-//			    		        User user = new User();			    		        
-//			    		        // Retrieve data from the ResultSet and set it in the User object
-//			    			    
-//			    			    user.setUserId(rs.getInt("u_id"));
-//			    		        user.setFirstName(rs.getString("first_name"));
-//			    		        user.setLastName(rs.getString("last_name"));
-//			    		        user.setMobileNumber(rs.getString("mobilenumber"));
-//			    		        user.setEmail(rs.getString("email"));
-//			    		        user.setPassword(rs.getString("password"));
-//			    		        user.setRole(rs.getString("u_roles"));
-//			     
-//			   				 	HttpSession session = request.getSession();
-//			   				 
-//			   				 	session.setAttribute("userObj", user);
-//			   				 
-//							    response.sendRedirect("index.jsp");
-//							    
-//							} else {
-//								response.sendRedirect("LoginRegister.jsp?error=1");
-//							}
-//						
-//			    			System.out.println(preparedStatement);
-//			    			
+		    			
 			    		
 			            
 	        } else if (action.equals("register")) {
 	        	
-	        	
-	            // Handle registration logic
+	       
 	        	
 
 				String fname= request.getParameter("fname");
@@ -151,10 +121,44 @@ public class LoginRegisterServlet extends HttpServlet {
 	            else {
 	                // Add new user to database or perform registration action
 	            	
-	                registerUser(fname,lname,mobile,email,password,roles);
+	                try {
+						registerUser(fname,lname,mobile,email,password,roles);
+					} catch (NoSuchAlgorithmException e) {
+						response.sendRedirect("LoginRegister.jsp?error=Database error");
+						e.printStackTrace();
+					}
 	                
-	                response.sendRedirect("LoginRegister.jsp");
+	                response.sendRedirect("LoginRegister.jsp?registrationSuccessfull=1");
 	            }
+	        }
+	        //logic for updating user details
+	        else if (action.equals("reset")) {
+	            
+	        	
+	        	String  email= request.getParameter("resetEmail");
+	        	String  password= request.getParameter("newPassword");
+	        	String  confirmPassword= request.getParameter("confirmPassword");
+	        	
+	        	
+	        	if (!userExists(email)) {
+	               
+	                response.sendRedirect("LoginRegister.jsp?emailNotExist=1");
+	                return; 
+	            }
+	        	
+	        	if(password.equals(confirmPassword)) {
+	        		        	try {
+	        		        		resetPassword(email ,UserDao.hashPassword(password));
+	        		        	} catch (NoSuchAlgorithmException e) {
+	        		        			response.sendRedirect("LoginRegister.jsp?error=Database error");
+	        		        			e.printStackTrace();
+	        		        		}		        	
+	        			}	        	
+	        	
+	        	response.sendRedirect("LoginRegister.jsp?passwordResetSuccess=1");
+	        	
+	        	
+	        	
 	        }
 	
 			}
@@ -217,10 +221,8 @@ public class LoginRegisterServlet extends HttpServlet {
 
 
 			
-			 private void registerUser(String fname, String lname, String mobile, String email, String password, String roles) {
-			    // Implement your logic to register a new user
-			    // For example, add user to a database
-			
+			 private void registerUser(String fname, String lname, String mobile, String email, String password, String roles) throws  NoSuchAlgorithmException {
+			  
 				
 					try {
 						
@@ -234,6 +236,29 @@ public class LoginRegisterServlet extends HttpServlet {
 						e.printStackTrace();
 					}
 			}
+			 
+			 
+			 private boolean resetPassword(String email , String password) {
+				 boolean resetsuccess =false;
+				 String UPDATE_PASSWORD = " update tbl_users set password= ? where email = ? ";
+				 try {
+					Connection connection = ConnectionManager.getConnection();
+					 PreparedStatement preparedstatement = connection.prepareStatement(UPDATE_PASSWORD);
+					 preparedstatement.setString(1, password);
+					 preparedstatement.setString(2, email);
+					 if(userExists(email)) {
+					   preparedstatement.executeQuery();
+					   resetsuccess=true;
+				       
+					 }
+					 	 
+				} catch (SQLException e) {
+					
+					e.printStackTrace();
+				}
+				 return resetsuccess;
+				 
+			 }
 			
 			}
 
