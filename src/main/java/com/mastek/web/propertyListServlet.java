@@ -17,7 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.mastek.bean.Property;
+import com.mastek.bean.PropertyAddress;
+import com.mastek.bean.PropertyImage;
 import com.mastek.dao.ConnectionManager;
+import com.mastek.dao.PropertyAddressDAO;
 
 import oracle.jdbc.OracleTypes;
 
@@ -34,77 +37,7 @@ public class propertyListServlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	/*
-	 * response.setContentType("text/html"); PrintWriter out = response.getWriter();
-	 * 
-	 * try { Connection conn = ConnectionManager.getConnection(); CallableStatement
-	 * cs = conn.prepareCall("{call displayPropertyList(?)}"); // Register the OUT
-	 * parameter for the cursor cs.registerOutParameter(1, OracleTypes.CURSOR);
-	 * 
-	 * // Execute the stored procedure cs.execute();
-	 * 
-	 * ResultSet rs = (ResultSet)cs.getObject(1); // Store the data in a list of
-	 * Property objects List<Property> properties = new ArrayList<>(); while
-	 * (rs.next()) {
-	 * 
-	 * 
-	 * Property property = new Property();
-	 * property.setPropertyId(rs.getInt("property_id"));
-	 * property.setPropertyType(rs.getString("property_type"));
-	 * property.setProSize(rs.getString("pro_size"));
-	 * property.setPurpose(rs.getString("purpose"));
-	 * property.setPrice(rs.getDouble("price"));
-	 * property.setNoOfRooms(rs.getInt("no_of_rooms"));
-	 * property.setNoOfKitchens(rs.getInt("no_of_kitchen"));
-	 * property.setNoOfBathrooms(rs.getInt("no_of_bathrooms"));
-	 * property.setAddress(rs.getString("address"));
-	 * 
-	 * String filePath = rs.getString("img");
-	 * 
-	 * 
-	 * // Get the index of the last occurrence of the directory separator (\) int
-	 * lastIndexOfSeparator = filePath.lastIndexOf('\\');
-	 * 
-	 * 
-	 * // Get the substring starting from the last occurrence of the directory
-	 * separator String newPath = filePath.substring(lastIndexOfSeparator + 1);
-	 * 
-	 * // Replace backslashes with double backslashes newPath =
-	 * newPath.replaceAll("\\\\", "\\\\\\\\");
-	 * 
-	 * // Add the necessary directory (Property_images\\) to the beginning of the
-	 * path newPath = "Property_images\\" + newPath;
-	 * 
-	 * System.out.println(newPath);
-	 * 
-	 * property.setImageData(newPath); //property.setImageData(rs.getString("img"));
-	 * 
-	 * property.setImageData(rs.getString("img")); // Set image data as string
-	 * 
-	 * // Retrieve image data from the database InputStream imageStream =
-	 * rs.getBinaryStream("img"); if (imageStream != null) { byte[] imageData =
-	 * imageStream.readAllBytes(); property.setImageData(imageData); }
-	 * 
-	 * properties.add(property); }
-	 * 
-	 * // Close resources rs.close(); cs.close(); conn.close();
-	 * 
-	 * // Set the list as an attribute in the request object
-	 * request.setAttribute("properties", properties);
-	 * request.getRequestDispatcher("property-list.jsp").forward(request, response);
-	 * 
-	 * 
-	 * // Forward the request to the JSP } catch (SQLException e) {
-	 * 
-	 * e.printStackTrace(); }
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * }
-	 */
-		
+	
 		  List<Property> properties = new ArrayList<>();
 
 	        try {
@@ -124,15 +57,33 @@ public class propertyListServlet extends HttpServlet {
 	                property.setNoOfRooms(rs.getInt("no_of_rooms"));
 	                property.setNoOfKitchens(rs.getInt("no_of_kitchen"));
 	                property.setNoOfBathrooms(rs.getInt("no_of_bathrooms"));
-	                property.setAddress(rs.getString("address"));
+	                
+	                PropertyAddress address = new PropertyAddress();
+	                address.setSociety(rs.getString("address")); // set Society 
+	                property.setAddress(address);
 
+	                
+	                
+
+	                // Fetching images for the property
+	                List<PropertyImage> images = new ArrayList<>();
+	                // Assuming the stored procedure returns image URLs along with other property details
 	                
 	                String filePath = rs.getString("img");
 	                int lastIndexOfSeparator = filePath.lastIndexOf('\\');
 	                String newPath = filePath.substring(lastIndexOfSeparator + 1).replaceAll("\\\\", "\\\\\\\\");
 	                newPath = "Property_images\\" + newPath;
-	                property.setImageData(newPath);
+	                
+	                PropertyImage proimage = new PropertyImage();
+	                proimage.setUrl(newPath);
+	                images.add(proimage);
+	                
+	                property.setImages(images);
+	                
 	                properties.add(property);
+	                System.out.println("properties : "+properties);
+
+	                
 	            }
 
 	            rs.close();

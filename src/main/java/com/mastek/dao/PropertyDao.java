@@ -23,15 +23,15 @@ public class PropertyDao {
 //	// property_id, u_id_fk, property_type, pro_size, price, features, no_of_rooms,
 //	// no_of_kitchen, no_of_bathrooms, amenities, status, purpose
 //
-//	private static final String SELECT_PROPERTY_BY_ID = "SELECT * from tbl_properties where property_id = ?";
+	private static final String SELECT_PROPERTY_BY_ID = "SELECT * from tbl_properties where property_id = ?";
 //
 //	// private static final String SELECT_ALL_PROPERTY = "SELECT * FROM
 //	// tbl_properties";
 //
 //	private static final String DELETE_PROPERTY_SQL = "DELETE FROM tbl_properties WHERE property_id =?";
 //	private static final String UPDATE_PROPERTY_SQL = "UPDATE tbl_properties SET property_type = ? , pro_size = ? , price = ? , features = ? , no_of_rooms = ? , no_of_kitchen = ?, no_of_bathrooms = ?,  amenities = ? , status = ? , purpose= ? from tbl_properties where property_id =?";
-//	private static final String SELECT_IMAGES_BY_PROPERTY_ID = "SELECT IMG  from tbl_property_img where PROPERTY_ID_FK = ?";
-//	private static final String SELECT_ADDRESS_BY_PROPERTY_ID = "SELECT SOCIETY,CITY,STATES,PINCODE  from tbl_property_add where PROPERTY_ID_FK = ?";
+	private static final String SELECT_IMAGES_BY_PROPERTY_ID = "SELECT IMG  from tbl_property_img where PROPERTY_ID_FK = ?";
+	private static final String SELECT_ADDRESS_BY_PROPERTY_ID = "SELECT SOCIETY,CITY,STATES,PINCODE  from tbl_property_add where PROPERTY_ID_FK = ?";
 
 	
 //	New 
@@ -82,8 +82,6 @@ public class PropertyDao {
 	public void insertProperty(Property property) {
 		
 		
-		//int property_new = 0;
-
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PROPERTY_SQL)) {
 
@@ -126,8 +124,6 @@ public class PropertyDao {
 	            e.printStackTrace();
 	        }
 		
-		//return property_new;
-
 	}
 	
 
@@ -140,5 +136,119 @@ public class PropertyDao {
         }
         return generatedKey;
     }
+	
+	
+	
+	// get property by id
+	
+
+	public Property getPropertyById(int propertyId) {
+		Property property = null;
+		try (
+				PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PROPERTY_BY_ID);
+				 PreparedStatement preparedStatementImages =
+				 connection.prepareStatement(SELECT_IMAGES_BY_PROPERTY_ID);
+				PreparedStatement preparedStatementAddress = connection
+						.prepareStatement(SELECT_ADDRESS_BY_PROPERTY_ID)) {
+
+			preparedStatement.setInt(1, propertyId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				property = new Property();
+				property.setPropertyId(resultSet.getInt("property_id"));
+				property.setPropertyType(resultSet.getString("property_type"));
+				property.setProSize(resultSet.getString("pro_size"));
+				property.setFeatures(resultSet.getString("features"));
+				property.setPurpose(resultSet.getString("purpose"));
+				property.setPrice(resultSet.getDouble("price"));
+				property.setNoOfRooms(resultSet.getInt("no_of_rooms"));
+				property.setNoOfKitchens(resultSet.getInt("no_of_kitchen"));
+				property.setNoOfBathrooms(resultSet.getInt("no_of_bathrooms"));
+				property.setAmenities(resultSet.getString("amenities"));
+				
+
+				// property.setAddress(rs.getString("address"));
+				// Set other properties from tbl_properties
+
+				// Fetch property images
+				  preparedStatementImages.setInt(1, propertyId);
+				   ResultSet imageResultSet = preparedStatementImages.executeQuery(); //
+					
+				   
+					  List<PropertyImage> list =new ArrayList<>();
+
+					  while (imageResultSet.next()) 
+					  {
+					
+					   System.out.println("image "+imageResultSet.getString("img"));
+					   
+					  PropertyImage image = new PropertyImage();
+					  
+			  			// Get the index of the last occurrence of the directory separator (\)
+		                String filePath = imageResultSet.getString("img");
+
+		                int lastIndexOfSeparator = filePath.lastIndexOf('\\');
+		                
+		                
+		               			// Get the substring starting from the last occurrence of the directory separator
+		                String newPath = filePath.substring(lastIndexOfSeparator + 1);
+		                
+		                			// Replace backslashes with double backslashes
+		                newPath = newPath.replaceAll("\\\\", "\\\\\\\\");
+		                
+		                			// Add the necessary directory (Property_images\\) to the beginning of the path
+		                newPath = "Property_images\\" + newPath;
+
+		                System.out.println("new "+newPath);
+		               
+		                
+		              //property.setImageData(newPath);
+					 image.setUrl(newPath);
+		               System.out.println("imgage object:"+image.toString());
+					  list.add(image); // Set properties of image	
+					  System.out.println(list.toString());
+
+					  }
+					  
+					  property.setImages(list); 
+					  System.out.println("Property:"+property.getImages());
+					  for (PropertyImage propertyImage : list) {
+						  
+						  System.out.println(propertyImage);
+						  System.out.println("img:");
+						
+					}
+
+					 
+				 
+
+				// Fetch property address
+		
+			preparedStatementAddress.setInt(1, propertyId);
+			ResultSet addressResultSet = preparedStatementAddress.executeQuery();
+			if (addressResultSet.next()) {
+				PropertyAddress address = new PropertyAddress();
+
+				// Set properties of address
+
+				address.setSociety(addressResultSet.getString("society"));
+				address.setCity(addressResultSet.getString("city"));
+				address.setState(addressResultSet.getString("states"));
+				address.setPincode(addressResultSet.getString("pincode"));
+
+				property.setAddress(address);
+			}
+		}
+	}catch(
+
+	SQLException e)
+	{
+		            e.printStackTrace();
+		        }return property;
+}
+
+	
+	
+	
 
 }

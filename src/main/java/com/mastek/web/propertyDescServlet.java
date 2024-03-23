@@ -1,6 +1,7 @@
 package com.mastek.web;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,17 +31,29 @@ public class propertyDescServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         int pid = Integer.parseInt(request.getParameter("propertyId"));
+       
+        try {
         
-        PropertyDao propertyDao = new PropertyDao();
+        PropertyDao propertyDao  = new PropertyDao();
+        
         Property property = propertyDao.getPropertyById(pid);	
+        
+
         
         String amenities = property.getAmenities();
         String[] amenitiesArray = amenities.split(",");
                
         request.setAttribute("propertyDesc", property);
         request.setAttribute("amenities", amenitiesArray);
-           
+
         request.getRequestDispatcher("property-desc.jsp").forward(request, response);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+           
 
 		
 	}

@@ -36,8 +36,6 @@
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-
-
 <script>
     $(document).ready(function(){
         // Function to fetch data
@@ -47,18 +45,18 @@
                 url: 'propertyListServlet', // URL of your servlet
                 success: function(data) {
                     var html = "<div class='row'>";
-                    data.forEach(property => {
+                    data.forEach((property, index) => {
                         html += "<div class='col-lg-4 col-md-6 wow fadeInUp' data-wow-delay='0.1s'>";
                         html += "<div class='property-item rounded overflow-hidden'>";
                         html += "<div class='position-relative overflow-hidden'>";
-                        html += "<a href='propertyDescServlet?propertyId=" + property.propertyId + "'><img class='img-fluid' src='" + property.imageData + "' style='width: 450px; height: 300px;' alt=''></a>";
+                        html += "<a href='propertyDescServlet?propertyId=" + property.propertyId + "'><img class='img-fluid' src='" + property.images[0].Url + "' style='width: 450px; height: 300px;' alt=''></a>";
                         html += "<div class='bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3'>For " + property.purpose + "</div>";
                         html += "<div class='bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3'>" + property.propertyType + "</div>";
                         html += "</div>";
                         html += "<div class='p-4 pb-0'>";
                         html += "<h5 class='text-primary mb-3'>" + property.price + "$</h5>";
-                        html += "<a class='d-block h5 mb-2' href='propertyDescServlet?propertyId=" + property.propertyId + "'>New " + property.propertyType + " For " + property.purpose + " " + property.address + "</a>";
-                        html += "<p><i class='fa fa-map-marker-alt text-primary me-2'></i>" + property.Address + "</p>";
+                        html += "<a class='d-block h5 mb-2' href='propertyDescServlet?propertyId=" + property.propertyId + "'>New " + property.propertyType + " For " + property.purpose + "</a>";
+                        html += "<p><i class='fa fa-map-marker-alt text-primary me-2'></i>" + property.address.society + "</p>";
                         html += "</div>";
                         html += "<div class='d-flex border-top'>";
                         html += "<small class='flex-fill text-center border-end py-2'><i class='fa fa-ruler-combined text-primary me-2'></i>" + property.proSize + " sqrft</small>";
@@ -67,6 +65,11 @@
                         html += "</div>";
                         html += "</div>";
                         html += "</div>";
+
+                        // Add margin-bottom to every third row
+                        if ((index + 1) % 3 === 0) {
+                            html += "<div class='w-100' style='margin-bottom:30px'></div>"; 
+                        }
                     });
                     html += "</div>";
                     $('#dataContainer').html(html);
@@ -81,15 +84,13 @@
         // Fetch data when the page loads
         fetchData();
         
-        // Optionally, you can also set an interval to fetch data periodically
-        // setInterval(fetchData, 5000); // Fetch data every 5 seconds (for example)
+        //setInterval(fetchData, 5000); // Fetch data every 5 seconds (for example)
     });
 </script>
 
 <div id="dataContainer">
     <!-- Fetched data will be displayed here -->
 </div>
-
 
 
 </body>

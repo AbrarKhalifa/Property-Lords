@@ -10,16 +10,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Property Details</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-   	<link rel="stylesheet" href="css/propertyDetail.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" href="css/propertyDetail.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     
 </head>
 
 <body>
 
 		<jsp:include page="navbar.jsp" />
+		
+		
+		<div class="row no-gutters">
+		<div class="col-md-6 mt-5">
+			<div class="property-details slideshow-container">
+				<div class="rent-box">For Rent</div>
 
+				<c:forEach items="${propertyDesc.images}" var="image">
+					<img src="${image.url}" class="mySlides" alt="Property Image">
+				</c:forEach>
+				
+				<a class="prev" onclick="plusSlides(-1)">&#10094;</a> <a
+					class="next" onclick="plusSlides(1)">&#10095;</a>
+			</div>
+		</div>
+		<div class="col-md-6 mt-5">
+			<div class="property-details">
+				<div class="property-info">
+					<h2 class="text-white">Property Information</h2>
+					<a href="other_page.html">
+						<div class="back-arrow">
+							<i class="fa fa-arrow-left" style="color: white"
+								aria-hidden="true"></i>
+							<div class="tooltip">Back To Home</div>
+						</div>
+					</a>
+
+					<div class="table-responsive">
+						<table class="table text-white">
+							<tbody>
+								<tr>
+
+									<td><strong>Property type:</strong></td>
+									<td><Strong> ${propertyDesc.propertyType}</Strong></td>
+								</tr>
+								<tr>
+									<td><strong>Features:</strong></td>
+									<td><strong>${propertyDesc.features}</strong></td>
+								</tr>
+
+								<tr>
+									<td><strong>Size:</strong></td>
+									<td><strong>${propertyDesc.proSize} sqft</strong></td>
+								</tr>
+								<tr>
+									<td><strong>Rooms:</strong></td>
+									<td><Strong>${propertyDesc.noOfRooms}</Strong></td>
+								</tr>
+								<tr>
+									<td><strong>Kitchens:</strong></td>
+									<td><strong>${propertyDesc.noOfKitchens}</strong></td>
+								</tr>
+								<tr>
+									<td><strong>Bathrooms:</strong></td>
+									<td><strong>${propertyDesc.noOfBathrooms}</strong></td>
+								</tr>
+								<tr>
+									<td><strong>price:</strong></td>
+									<td><strong>${propertyDesc.price}</strong></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+<%-- 
         <div class="row no-gutters">
             <div class="col-md-6 mt-5">
                 <div class="property-details slideshow-container">
@@ -34,7 +105,8 @@
                 </div>
             </div>
             <div class="col-md-6 mt-5">
-                <div class="property-info property-details" >
+             	<div class="property-details">
+                <div class="property-info" >
                     <h2 class="text-white">Property Information</h2>
                     <a href="property-list.jsp">
                         <div class="back-arrow" >
@@ -84,7 +156,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
+        </div> --%>
 
     
     <div class="location-info">
@@ -95,32 +168,37 @@
                  <div class="amenity"><strong><c:out value="${amenity}"/></strong></div>
               
      	  	  </c:forEach>
-     	<!-- 
-            <div class="amenity"><strong>Garden</strong></div>
-            <div class="amenity"><strong>Pool</strong></div>
-            <div class="amenity"><strong>Gym</strong></div>
-            <div class="amenity"><strong>Lift</strong></div>
-            <div class="amenity"><strong>Swimming Pool</strong></div> -->
+     	
         </div>
     </div>
     <div class="location-info">
         <h2 class="text-white">Location Information</h2>
         <div class="amenity-box">
-            <div class="amenity"><strong>Society: ${propertyDesc.addresses.society}</strong></div>
-            <div class="amenity"><strong>City: ${propertyDesc.addresses.city}</strong></div>
-            <div class="amenity"><strong>State:  ${propertyDesc.addresses.state}</strong></div>
-            <div class="amenity"><strong>Pin Code: ${propertyDesc.addresses.pincode}</strong></div>
+            <div class="amenity"><strong>Society: ${propertyDesc.address.society}</strong></div>
+            <div class="amenity"><strong>City: ${propertyDesc.address.city}</strong></div>
+            <div class="amenity"><strong>State:  ${propertyDesc.address.state}</strong></div>
+            <div class="amenity"><strong>Pin Code: ${propertyDesc.address.pincode}</strong></div>
         </div>
     </div>
     
+    
+    
+    
+	<div class="mt-4">
+		<button type="button" class="btn btn-primary "
+			style="border-radius: 20px;">Book an Appointment</button>
+		<form id="rentApplicationForm" action="rent-applications.jsp"
+			method="post" class="btn btn-primary" style="border-radius: 20px;">
+			<input type="hidden" name="propertyId" value="${propertyDesc.propertyId }">
+ 			<input type="hidden" name="agentId" value="${propertyDesc.agent_id_fk}">
+ 			<input type="hidden" name="rent" value="${propertyDesc.price }">
+			<!-- Add more form fields as needed -->
 
-    <div class="mt-4">
-        <button type="button" class="btn btn-primary " style=" border-radius: 20px;">Book an Appointment</button>
-        <button type="button" class="btn btn-primary" style=" border-radius: 20px;">Submit Rent Documents</button>
-        
-    </div>
-    
-    
+			<button type="submit" class="btn btn-primary m-0 p-0">Send Rent Application</button>
+		</form>
+	</div>
+
+   
     
     
     <script>
@@ -151,6 +229,14 @@
             }
             slides[slideIndex - 1].style.display = "block";
         }
+        
+        
+        function redirectToRentApplications(propertyId) {
+			// Redirect to rent-applications.jsp with id=1 as a parameter
+			var url = 'rent-applications.jsp?propertyId=' + propertyId;
+			window.location.href = url;
+		}
+        
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
