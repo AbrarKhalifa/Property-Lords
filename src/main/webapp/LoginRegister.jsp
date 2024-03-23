@@ -419,8 +419,8 @@ $(document).ready(function() {
 				errorElement.textContent = "Mobile number Should not contain alphabets or special charaters.";
 				input.setCustomValidity("Mobile number Should not contain alphabets or special characters.");
 			} else if (!/^[6-9]\d{9}$/.test(mobileNumber)) {
-		        errorElement.textContent = "Enter Correct mobile Number";
-		        input.setCustomValidity("Enter Correct Mobile number");
+		        errorElement.textContent = "Enter Correct mobile Number..";
+		        input.setCustomValidity("Enter Correct Mobile number..");
 		    }else {
 				errorElement.textContent = "";
 				input.setCustomValidity("");
