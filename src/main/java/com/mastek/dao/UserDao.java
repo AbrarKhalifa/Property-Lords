@@ -1,5 +1,7 @@
 package com.mastek.dao;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -89,7 +91,7 @@ public UserDao() {
 
 	// insert user
 	
-	public void insertUser(User user) throws  SQLException{
+	public void insertUser(User user) throws  SQLException, NoSuchAlgorithmException{
 		
 		System.out.println(INSERT_USERS_SQL);
 		try {
@@ -113,7 +115,21 @@ public UserDao() {
 	
 	
 	
-	
+	 
+//    public static  String hashPassword(String password) throws NoSuchAlgorithmException {
+//    	 final String SALT = "FixedSalt123!";// if two users having same password it has to store same hased password in database
+//    	 password= password+SALT;
+//        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+//        byte[] hash = digest.digest(password.getBytes());
+//        StringBuilder hexString = new StringBuilder();
+//        for (byte b : hash) {
+//            String hex = Integer.toHexString(0xff & b);
+//            if (hex.length() == 1) hexString.append('0');
+//            hexString.append(hex);
+//        }
+//        return hexString.toString();
+//    }
+
 	
 	
 	

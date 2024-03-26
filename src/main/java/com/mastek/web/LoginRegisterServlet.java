@@ -1,8 +1,8 @@
 package com.mastek.web;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mastek.bean.User;
+import com.mastek.dao.ConnectionManager;
 import com.mastek.dao.UserDao;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -27,12 +28,6 @@ public class LoginRegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private UserDao userDao;
-
-	 
-    private String jdbcURL ="jdbc:oracle:thin:@localhost:1521:xe";
-	private String jdbcUsername ="finalProject";
-	private String jdbcPassword ="sys";
-	private String jdbcDriver ="oracle.jdbc.driver.OracleDriver";
 	
     public LoginRegisterServlet() throws ServletException{
 		userDao = new UserDao();
@@ -52,23 +47,21 @@ public class LoginRegisterServlet extends HttpServlet {
 	        if (action.equals("login")) {
 	        	
 	        	String email = request.getParameter("email");
-	        	String password = request.getParameter("password");
-	        	Connection connection = null;
-	        	PreparedStatement preparedStatement = null;
-	        	ResultSet rs = null;
+	        	String originalpassword = request.getParameter("password");
+				
+	
 
 	        	String query = "SELECT * FROM tbl_users WHERE email = ?";
 
 	        	try {
-	        	    Class.forName(jdbcDriver);
-	        	    connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
-	        	    preparedStatement = connection.prepareStatement(query);
+	        	    PreparedStatement preparedStatement = ConnectionManager.getConnection().prepareStatement(query);
 	        	    preparedStatement.setString(1, email);
-	        	    rs = preparedStatement.executeQuery();
+
+	        	    ResultSet rs = preparedStatement.executeQuery();
 
 	        	    if (rs.next()) {
 	        	        String hashedPasswordFromDB = rs.getString("password");
-	        	        boolean passwordMatches = BCrypt.verifyer().verify(password.toCharArray(), hashedPasswordFromDB).verified;
+	        	        boolean passwordMatches = BCrypt.verifyer().verify(originalpassword.toCharArray(), hashedPasswordFromDB).verified;
 
 	        	        if (passwordMatches) {
 	        	            // Passwords match, authentication successful
@@ -83,10 +76,15 @@ public class LoginRegisterServlet extends HttpServlet {
 	        	            HttpSession session = request.getSession();
 	        	            session.setAttribute("userObj", user);
 	        	            response.sendRedirect("index.jsp");
+	        	            rs.close();
+	    					preparedStatement.close();
+	    					ConnectionManager.getConnection().close();
+	    					
 	        	        } else {
 	        	            // Passwords don't match, authentication failed
 	        	            response.sendRedirect("LoginRegister.jsp?error=1");
 	        	        }
+	        	    
 	        	    } else {
 	        	        // User not found
 	        	        response.sendRedirect("LoginRegister.jsp?error=User not found");
@@ -94,49 +92,9 @@ public class LoginRegisterServlet extends HttpServlet {
 	        	} catch (Exception e) {
 	        	    e.printStackTrace();
 	        	    response.sendRedirect("LoginRegister.jsp?error=Database error");
-	        	} finally {
-	        	    // Close resources in finally block
-	        	    try {
-	        	        if (rs != null) rs.close();
-	        	        if (preparedStatement != null) preparedStatement.close();
-	        	        if (connection != null) connection.close();
-	        	    } catch (SQLException ex) {
-	        	        ex.printStackTrace();
-	        	    }
 	        	}
 
-				              
-		    			//ResultSet rs = preparedStatement.executeQuery();
-			    			
-
-//			    			if (rs.next()) {
-//												
-//			    				
-//			    				 // Create a new User object to hold user data
-//			    		        User user = new User();			    		        
-//			    		        // Retrieve data from the ResultSet and set it in the User object
-//			    			    
-//			    			    user.setUserId(rs.getInt("u_id"));
-//			    		        user.setFirstName(rs.getString("first_name"));
-//			    		        user.setLastName(rs.getString("last_name"));
-//			    		        user.setMobileNumber(rs.getString("mobilenumber"));
-//			    		        user.setEmail(rs.getString("email"));
-//			    		        user.setPassword(rs.getString("password"));
-//			    		        user.setRole(rs.getString("u_roles"));
-//			     
-//			   				 	HttpSession session = request.getSession();
-//			   				 
-//			   				 	session.setAttribute("userObj", user);
-//			   				 
-//							    response.sendRedirect("index.jsp");
-//							    
-//							} else {
-//								response.sendRedirect("LoginRegister.jsp?error=1");
-//							}
-//						
-//			    			System.out.println(preparedStatement);
-//			    			
-			    		
+			
 			            
 	        } else if (action.equals("register")) {
 	        	
@@ -157,25 +115,67 @@ public class LoginRegisterServlet extends HttpServlet {
 	            	
 					response.sendRedirect("LoginRegister.jsp?emailAlready=1");
 	                
-	            } else {
-	                // Add new user to database or perform registration action
-	                registerUser(fname,lname,mobile,email,password,roles);
-	                response.sendRedirect("LoginRegister.jsp");
+	            } else if(mobileNumberExists(mobile)) {
+	            	
+	            	response.sendRedirect("LoginRegister.jsp?mobileAlready=1");
+
+	            	
+	            }
+	            else {
+	                try {
+	                	
+						registerUser(fname,lname,mobile,email,password,roles);
+						
+					} catch (NoSuchAlgorithmException e) {
+	        			response.sendRedirect("LoginRegister.jsp?error=Database error");
+
+						e.printStackTrace();
+					}
+		                
+		                response.sendRedirect("LoginRegister.jsp?registrationSuccessfull=1");
 	            }
 	        }
+	        //logic for updating user details
+//	        else if (action.equals("reset")) {
+//	            
+//	        	
+//	        	String  email= request.getParameter("resetEmail");
+//	        	String  password= request.getParameter("newPassword");
+//	        	String  confirmPassword= request.getParameter("confirmPassword");
+//	        	
+//	        	
+//	        	if (!userExists(email)) {
+//	               
+//	                response.sendRedirect("LoginRegister.jsp?emailNotExist=1");
+//	                return; 
+//	            }
+//	        	
+//	        	if(password.equals(confirmPassword)) {
+//	        		        	try {
+//	        		        		resetPassword(email ,UserDao.hashPassword(password));
+//
+//	        		        	} catch (NoSuchAlgorithmException e) {
+//	        		        			response.sendRedirect("LoginRegister.jsp?error=Database error");
+//	        		        			e.printStackTrace();
+//	        		        		}		        	
+//	        			}	        	
+//	        	
+//	        	response.sendRedirect("LoginRegister.jsp?passwordResetSuccess=1");
+//	        	
+//	        	
+//	        	
+//	        }
 	
 			}
-	
-	
-	
+	        
+	      
 			private boolean userExists(String email) {
 				
 			    String CHECK_USER_QUERY = "SELECT * FROM tbl_users WHERE email = ?";
 			    
 			    try {
 			    	
-			        Class.forName(jdbcDriver);
-			        Connection connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+			        Connection connection = ConnectionManager.getConnection();
 			        
 			        PreparedStatement checkUserStmt = connection.prepareStatement(CHECK_USER_QUERY);
 			        checkUserStmt.setString(1, email);
@@ -192,33 +192,87 @@ public class LoginRegisterServlet extends HttpServlet {
 			        
 			        return userExists;
 			        
-			    } catch (ClassNotFoundException | SQLException e) {
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			        return false;
+			    }
+			}
+			
+			private boolean mobileNumberExists(String mobile) {
+			    String CHECK_USER_MOBILE = "SELECT * FROM tbl_users WHERE mobileNumber = ?";
+			    
+			    try {
+			        Connection connection = ConnectionManager.getConnection();
+			        PreparedStatement checkMobileStmt = connection.prepareStatement(CHECK_USER_MOBILE);
+			        checkMobileStmt.setString(1, mobile);
+			        
+			        ResultSet rs = checkMobileStmt.executeQuery();
+			        
+			        boolean mobileExists = rs.next();
+			        
+			        // Close resources
+			        rs.close();
+			        checkMobileStmt.close();
+			        connection.close();
+			        
+			        return mobileExists;
+			        
+			    } catch (SQLException e) {
 			        e.printStackTrace();
 			        return false;
 			    }
 			}
 
+
 			
-			 private void registerUser(String fname, String lname, String mobile, String email, String password, String roles) {
+			 private void registerUser(String fname, String lname, String mobile, String email, String password, String roles) throws NoSuchAlgorithmException {
 			    // Implement your logic to register a new user
 			    // For example, add user to a database
 			
 				
 					try {
+						
 						int costFactor = 12;
 						String hashedPassword = BCrypt.withDefaults().hashToString(costFactor, password.toCharArray());
-						System.out.println("pass "+hashedPassword);
-						
 						User newUser = new User(fname,lname,mobile,email,hashedPassword,roles);			
 						    userDao.insertUser(newUser);
 			
 						
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 			}
+	
+
 			
-			}
+//			private boolean resetPassword(String email , String password) {
+//				
+//				System.out.println("Email : "+email+" Password : "+password);
+//				 
+//				 boolean resetsuccess =false;
+//				 String UPDATE_PASSWORD = " update tbl_users set password= ? where email = ? ";
+//				 try {
+//					Connection connection = ConnectionManager.getConnection();
+//					 PreparedStatement preparedstatement = connection.prepareStatement(UPDATE_PASSWORD);
+//					 preparedstatement.setString(1, password);
+//					 preparedstatement.setString(2, email);
+//					 if(userExists(email)) {
+//					   preparedstatement.executeQuery();
+//					   resetsuccess=true;
+//				       
+//						System.out.println("New Email : "+email+" New Password : "+password);
+//
+//					 }
+//					 	 
+//				} catch (SQLException e) {
+//					
+//					e.printStackTrace();
+//				}
+//				 return resetsuccess;
+//				 
+//			}
+//			
+//			}
+}
 
 
